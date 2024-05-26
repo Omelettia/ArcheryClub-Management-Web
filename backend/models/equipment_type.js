@@ -17,9 +17,21 @@ EquipmentType.init({
     type: DataTypes.TEXT,
     allowNull: false
   },
-  type: {
+  purchasingPrice: { 
+    type: DataTypes.FLOAT,
+    allowNull: false
+  },
+  rentingPrice: { 
+    type: DataTypes.FLOAT,
+    allowNull: false
+  },
+  category: {
     type: DataTypes.TEXT,
     allowNull: false
+  },
+  disabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   },
 }, {
   sequelize,
