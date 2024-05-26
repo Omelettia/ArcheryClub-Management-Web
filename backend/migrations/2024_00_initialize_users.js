@@ -1,18 +1,7 @@
 const { DataTypes } = require('sequelize');
-
+const Sequelize = require('sequelize'); 
 module.exports = {
   up: async ({ context: queryInterface }) => {
-    await queryInterface.createTable('requests', {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      content: {
-        type: DataTypes.TEXT,
-        allowNull: false
-      },
-    });
     await queryInterface.createTable('users', {
       id: {
         type: DataTypes.INTEGER,
@@ -57,11 +46,20 @@ module.exports = {
       admin: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
   down: async ({ context: queryInterface }) => {
-    await queryInterface.dropTable('requests');
     await queryInterface.dropTable('users');
   },
 };

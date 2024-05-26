@@ -9,18 +9,10 @@ Equipment.init({
     primaryKey: true,
     autoIncrement: true
   },
-  name: {
+  state: {
     type: DataTypes.TEXT,
     allowNull: false
   },
-  purchasingPrice: { // Corrected field name
-    type: DataTypes.FLOAT,
-    allowNull: false
-  },
-  rentingPrice: { // Corrected field name
-    type: DataTypes.FLOAT,
-    allowNull: false
-  }
 }, {
   sequelize,
   underscored: true,

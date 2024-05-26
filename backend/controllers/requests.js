@@ -1,75 +1,86 @@
-const router = require('express').Router()
-const jwt = require('jsonwebtoken')
-const { Op } = require('sequelize')
-
-const { tokenExtractor } = require('../util/middleware')
-const { Request, User } = require('../models')
-const { SECRET } = require('../util/config')
+const router = require('express').Router();
+const { tokenExtractor } = require('../util/middleware');
+const { Request, User, RequestType } = require('../models');
 
 router.get('/', async (req, res) => {
-  const where = {}
-
-  if (req.query.important) {
-    where.important = req.query.important === "true"
-  } 
-
-  if (req.query.search) {
-    where.content = {
-      [Op.substring]: req.query.search
-    }
+  try {
+    const requests = await Request.findAll({
+      attributes: { exclude: ['userId'] },
+      include: [
+        {
+          model: User,
+          attributes: ['name']
+        },
+        {
+          model: RequestType,
+          attributes: ['name'] 
+        }
+      ]
+    });
+    res.json(requests);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
-
-  const requests = await Request.findAll({ 
-    attributes: { exclude: ['userId'] },
-    include: {
-      model: User,
-      attributes: ['name']
-    },
-    where
-  })
-
-  res.json(requests)
-})
+});
 
 router.post('/', tokenExtractor, async (req, res) => {
   try {
-    const user = await User.findByPk(req.decodedToken.id)
-    const request = await Request.create({...req.body, userId: user.id, date: new Date()})
-    res.json(request)
-  } catch(error) {
-    console.log(error)
-    return res.status(400).json({ error })
+    const user = await User.findByPk(req.decodedToken.id);
+
+    const requestType = await RequestType.findByPk(req.body.requestTypeId);
+    if (!requestType) {
+      return res.status(400).json({ error: 'Invalid request type' });
+    }
+
+    const request = await Request.create({
+      ...req.body,
+      userId: user.id,
+      requestTypeId: requestType.id
+    });
+    res.json(request);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ error: 'Invalid data' });
   }
-})
+});
 
 const requestFinder = async (req, res, next) => {
-  req.request = await Request.findByPk(req.params.id)
-  next()
-} 
+  try {
+    req.request = await Request.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          attributes: ['name']
+        },
+        {
+          model: RequestType,
+          attributes: ['name'] 
+        }
+      ]
+    });
+    next();
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 
 router.get('/:id', requestFinder, async (req, res) => {
   if (req.request) {
-    res.json(req.request)
+    res.json(req.request);
   } else {
-    res.status(404).end()
+    res.status(404).json({ error: 'Request not found' });
   }
-})
+});
 
 router.delete('/:id', requestFinder, async (req, res) => {
   if (req.request) {
-    await req.request.destroy()
-  }
-  res.status(204).end()
-})
-
-router.put('/:id', requestFinder, async (req, res) => {
-  if (req.request) {
-    req.request.important = req.body.important
-    await req.request.save()
-    res.json(req.request)
+    await req.request.destroy();
+    res.status(204).end();
   } else {
-    res.status(404).end()
+    res.status(404).json({ error: 'Request not found' });
   }
-})
+});
 
-module.exports = router
+module.exports = router;

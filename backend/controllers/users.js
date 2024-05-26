@@ -1,15 +1,7 @@
 const router = require('express').Router()
 
 const { User, Request, Booking } = require('../models')
-const { tokenExtractor } = require('../util/middleware')
-
-const isAdmin = async (req, res, next) => {
-  const user = await User.findByPk(req.decodedToken.id)
-  if (!user.admin) {
-    return res.status(401).json({ error: 'operation not permitted' })
-  }
-  next()
-}
+const { tokenExtractor,isAdmin } = require('../util/middleware')
 
 router.put('/:username', tokenExtractor, isAdmin, async (req, res) => {
   const user = await User.findOne({ 
@@ -30,14 +22,13 @@ router.get('/', async (req, res) => {
     include: [
       {
         model: Request,
-        attributes: { exclude: ['userId'] } 
+        attributes: { exclude: ['userId'] },
+        attributes: []
       }, 
       {
         model: Booking,
         attributes: ['name', 'id'],
-        through: {
-          attributes: []
-        }
+        attributes: []
       }
     ]
   })
@@ -61,14 +52,14 @@ router.get('/:id', async (req, res) => {
 
   let bookings = undefined
 
-  if (req.query.bookings) { // Corrected to query for 'bookings' instead of 'teams'
+  if (req.query.bookings) { 
     bookings = await user.getBookings({
       attributes: ['name'],
       joinTableAttributes: []  
     })
   }
 
-  res.json({ ...user.toJSON(), bookings }) // Changed teams to bookings
+  res.json({ ...user.toJSON(), bookings }) 
 })
 
 module.exports = router
