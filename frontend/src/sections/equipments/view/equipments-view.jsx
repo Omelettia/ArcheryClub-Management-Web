@@ -10,7 +10,7 @@ import { equipments } from 'src/_mock/equipments';
 import EquipmentCard from '../equipment-card';
 import EquipmentSort from '../equipment-sort';
 import EquipmentFilters from '../equipment-filters';
-import EquipmentCartWidget from '../equipment';
+import EquipmentCartWidget from '../equipment-cart-widget';
 
 // ----------------------------------------------------------------------
 
