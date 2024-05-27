@@ -66,7 +66,7 @@ export default function Nav({ openNav, onCloseNav, isAuthenticated }) {
       }}
     >
       <Link to="/profile" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-        <Avatar src='//assets/images/avatars/avatar_default.png' alt={accountInfo.username} />
+        <Avatar src='/assets/images/avatars/avatar_default.png' alt={accountInfo.username} />
         <Box sx={{ ml: 2 }}>
           <Typography variant="subtitle2">{accountInfo.name}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>

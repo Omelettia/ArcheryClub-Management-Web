@@ -1,21 +1,34 @@
-import { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-
-import { equipments } from 'src/_mock/equipments';
-
+import Button from '@mui/material/Button';
+import axios from 'axios'; // Import axios for making HTTP requests
+import Iconify from 'src/components/iconify';
 import EquipmentCard from '../equipment-card';
 import EquipmentSort from '../equipment-sort';
 import EquipmentFilters from '../equipment-filters';
-import EquipmentCartWidget from '../equipment-cart-widget';
-
-// ----------------------------------------------------------------------
+import NewEquipmentTypeForm from '../new-equipment-type-form';
 
 export default function EquipmentsView() {
   const [openFilter, setOpenFilter] = useState(false);
+  const [openNewEquipmentTypeForm, setOpenNewEquipmentTypeForm] = useState(false);
+  const [equipments, setEquipments] = useState([]); // State to store fetched equipments
+
+  useEffect(() => {
+    // Fetch equipment data when the component mounts
+    const fetchEquipments = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/equipmentTypes/');
+        setEquipments(response.data); // Set the fetched equipments in state
+      } catch (error) {
+        console.error('Error fetching equipments:', error);
+      }
+    };
+
+    fetchEquipments();
+  }, []); // Empty dependency array ensures the effect runs only once after the component mounts
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -23,6 +36,19 @@ export default function EquipmentsView() {
 
   const handleCloseFilter = () => {
     setOpenFilter(false);
+  };
+
+  const handleOpenNewEquipmentTypeForm = () => {
+    setOpenNewEquipmentTypeForm(true);
+  };
+
+  const handleCloseNewEquipmentTypeForm = () => {
+    setOpenNewEquipmentTypeForm(false);
+  };
+
+  const handleNewEquipmentTypeSubmit = (formData) => {
+    // Handle submitting the new equipment type data
+    console.log(formData);
   };
 
   return (
@@ -35,16 +61,23 @@ export default function EquipmentsView() {
         direction="row"
         alignItems="center"
         flexWrap="wrap-reverse"
-        justifyContent="flex-end"
+        justifyContent="space-between"
         sx={{ mb: 5 }}
       >
+        <Button
+          variant="contained"
+          color="inherit"
+          startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={handleOpenNewEquipmentTypeForm}
+        >
+          New
+        </Button>
         <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
           <EquipmentFilters
             openFilter={openFilter}
             onOpenFilter={handleOpenFilter}
             onCloseFilter={handleCloseFilter}
           />
-
           <EquipmentSort />
         </Stack>
       </Stack>
@@ -57,7 +90,11 @@ export default function EquipmentsView() {
         ))}
       </Grid>
 
-      <EquipmentCartWidget />
+      <NewEquipmentTypeForm
+        open={openNewEquipmentTypeForm}
+        onClose={handleCloseNewEquipmentTypeForm}
+        onSubmit={handleNewEquipmentTypeSubmit}
+      />
     </Container>
   );
 }

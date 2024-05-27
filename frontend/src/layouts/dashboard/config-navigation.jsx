@@ -24,7 +24,7 @@ const navConfig = [
   },
   {
     title: 'bookings',
-    path: '/blog',
+    path: '/booking',
     icon: icon('ic_blog'),
   },
   {

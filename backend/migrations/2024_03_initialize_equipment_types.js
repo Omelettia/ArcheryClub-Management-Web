@@ -16,17 +16,25 @@ module.exports = {
         type: DataTypes.TEXT,
         allowNull: false
       },
-      purchasingPrice: { 
+      purchasing_price: { 
         type: DataTypes.FLOAT,
         allowNull: false
       },
-      rentingPrice: { 
+      renting_price: { 
         type: DataTypes.FLOAT,
         allowNull: false
       },
       category: {
         type: DataTypes.TEXT,
         allowNull: false
+      },
+      equipment_image: {
+        type: DataTypes.STRING, 
+        allowNull: true, 
+      },
+      skill_level: {
+        type: DataTypes.STRING, 
+        allowNull: true, 
       },
       disabled: {
         type: DataTypes.BOOLEAN,
