@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios'; // Import axios for making HTTP requests
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
@@ -22,24 +23,46 @@ import Iconify from 'src/components/iconify';
 
 export default function LoginView() {
   const theme = useTheme();
-
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleClick = () => {
-    router.push('/dashboard');
+  const handleLogin = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:3001/api/login', { username, password });
+      // Store the token in localStorage or context
+      localStorage.setItem('token', response.data.token);
+      router.push('/');
+    } catch (err) {
+      setError('Invalid username or password');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="username" label="UserName" />
+        <TextField
+          name="username"
+          label="UserName"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
 
         <TextField
           name="password"
           label="Password"
           type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -51,6 +74,12 @@ export default function LoginView() {
           }}
         />
       </Stack>
+
+      {error && (
+        <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+          {error}
+        </Typography>
+      )}
 
       <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
         <Link variant="subtitle2" underline="hover">
@@ -64,7 +93,8 @@ export default function LoginView() {
         type="submit"
         variant="contained"
         color="inherit"
-        onClick={handleClick}
+        loading={loading}
+        onClick={handleLogin}
       >
         Login
       </LoadingButton>

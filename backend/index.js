@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
 const { PORT } = require('./util/config');
@@ -15,6 +16,7 @@ const requestTypesRouter = require('./controllers/request_types');
 const eventsRouter = require('./controllers/events');
 
 app.use(express.json());
+app.use(cors());
 
 // Define routes
 app.use('/api/requests', requestsRouter);

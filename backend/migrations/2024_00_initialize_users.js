@@ -39,6 +39,10 @@ module.exports = {
         allowNull: false,
         defaultValue: 0
       },
+      profileImage: {
+        type: DataTypes.STRING, 
+        allowNull: true, 
+      },
       staff: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
