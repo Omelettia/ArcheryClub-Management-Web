@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 
-import { BlogView } from 'src/sections/blog/view';
+import { BookingView } from 'src/sections/booking/view';
 
 // ----------------------------------------------------------------------
 
-export default function BlogPage() {
+export default function BookingPage() {
   return (
     <>
       <Helmet>
-        <title> Blog | WolfArchery </title>
+        <title> Booking | WolfArchery </title>
       </Helmet>
 
-      <BlogView />
+      <BookingView />
     </>
   );
 }

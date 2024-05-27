@@ -14,27 +14,12 @@ import { ColorPreview } from 'src/components/color-utils';
 // ----------------------------------------------------------------------
 
 export default function ShopEquipmentCard({ equipment }) {
-  const renderStatus = (
-    <Label
-      variant="filled"
-      color={(equipment.status === 'sale' && 'error') || 'info'}
-      sx={{
-        zIndex: 9,
-        top: 16,
-        right: 16,
-        position: 'absolute',
-        textTransform: 'uppercase',
-      }}
-    >
-      {equipment.status}
-    </Label>
-  );
-
+  
   const renderImg = (
     <Box
       component="img"
       alt={equipment.name}
-      src={equipment.cover}
+      src={equipment.equipment_image}
       sx={{
         top: 0,
         width: 1,
@@ -47,36 +32,30 @@ export default function ShopEquipmentCard({ equipment }) {
 
   const renderPrice = (
     <Typography variant="subtitle1">
-      <Typography
-        component="span"
-        variant="body1"
-        sx={{
-          color: 'text.disabled',
-          textDecoration: 'line-through',
-        }}
-      >
-        {equipment.priceSale && fCurrency(equipment.priceSale)}
-      </Typography>
-      &nbsp;
-      {fCurrency(equipment.price)}
+      {equipment.renting_price && (
+        <Typography
+          component="span"
+          variant="body1"
+        >
+          ${fCurrency(equipment.renting_price)}
+        </Typography>
+      )}
     </Typography>
   );
+  
+  
 
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {equipment.status && renderStatus}
-
         {renderImg}
       </Box>
-
       <Stack spacing={2} sx={{ p: 3 }}>
         <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
           {equipment.name}
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={equipment.colors} />
           {renderPrice}
         </Stack>
       </Stack>
