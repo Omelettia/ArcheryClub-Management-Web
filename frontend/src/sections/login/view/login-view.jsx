@@ -1,7 +1,5 @@
 import { useState } from 'react';
-
 import PropTypes from 'prop-types';
-
 import axios from 'axios'; // Import axios for making HTTP requests
 
 import Box from '@mui/material/Box';
@@ -22,11 +20,10 @@ import { bgGradient } from 'src/theme/css';
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
+// Import the NewUserForm component
+import NewUserForm from '../new-user-form';
 
-
-// ----------------------------------------------------------------------
-
-export default function LoginView({ isAuthenticated, setIsAuthenticated }) {
+export default function LoginView({ setIsAuthenticated, setIsStaff, setIsAdmin }) {
   const theme = useTheme();
   const router = useRouter();
 
@@ -35,6 +32,7 @@ export default function LoginView({ isAuthenticated, setIsAuthenticated }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showNewUserForm, setShowNewUserForm] = useState(false); // State variable to track whether to show the new user form
 
   const handleLogin = async () => {
     setLoading(true);
@@ -45,6 +43,16 @@ export default function LoginView({ isAuthenticated, setIsAuthenticated }) {
       // Store the token in localStorage or context
       localStorage.setItem('token', response.data.token);
       setIsAuthenticated(true);
+
+      // Parse the token to extract user information
+      const token = localStorage.getItem('token');
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      const { staff, admin } = decodedToken;
+
+      // Set isStaff and isAdmin based on token values
+      setIsStaff(staff);
+      setIsAdmin(admin);
+      
       router.push('/');
     } catch (err) {
       setError('Invalid username or password');
@@ -53,6 +61,20 @@ export default function LoginView({ isAuthenticated, setIsAuthenticated }) {
     }
   };
 
+  const handleShowNewUserForm = () => {
+    setShowNewUserForm(true);
+  };
+
+  const handleCloseNewUserForm = () => {
+    setShowNewUserForm(false);
+  };
+
+  const handleNewUserSubmit = (formData) => {
+    // Handle submitting the new user data
+    console.log(formData);
+  };
+
+  
   const renderForm = (
     <>
       <Stack spacing={3}>
@@ -107,6 +129,7 @@ export default function LoginView({ isAuthenticated, setIsAuthenticated }) {
     </>
   );
 
+
   return (
     <Box
       sx={{
@@ -137,7 +160,7 @@ export default function LoginView({ isAuthenticated, setIsAuthenticated }) {
 
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
             Don’t have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }}>
+            <Link variant="subtitle2" sx={{ ml: 0.5 }} onClick={handleShowNewUserForm}>
               Get started
             </Link>
           </Typography>
@@ -145,11 +168,17 @@ export default function LoginView({ isAuthenticated, setIsAuthenticated }) {
           {renderForm}
         </Card>
       </Stack>
+      <NewUserForm
+        open={showNewUserForm}
+        onClose={handleCloseNewUserForm}
+        onSubmit={handleNewUserSubmit}
+      />
     </Box>
   );
 }
 
 LoginView.propTypes = {
-  isAuthenticated: PropTypes.bool.isRequired,
   setIsAuthenticated: PropTypes.func.isRequired,
+  setIsStaff: PropTypes.func.isRequired,
+  setIsAdmin: PropTypes.func.isRequired,
 };

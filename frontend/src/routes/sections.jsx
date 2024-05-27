@@ -13,7 +13,7 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
 
-export default function Router({ isAuthenticated, setIsAuthenticated }) {
+export default function Router({ isAuthenticated, setIsAuthenticated, isStaff, setIsStaff,isAdmin,setIsAdmin }) {
   const routes = useRoutes([
     {
       element: (
@@ -27,13 +27,19 @@ export default function Router({ isAuthenticated, setIsAuthenticated }) {
         { element: <IndexPage />, index: true },
         { path: 'Profile', element: <ProfilePage /> },
         { path: 'user', element: <UserPage /> },
-        { path: 'equipments', element: <EquipmentsPage /> },
+        { path: 'equipments', element: <EquipmentsPage isStaff={isStaff} /> },
         { path: 'booking', element: <BookingPage /> },
       ],
     },
     {
       path: 'login',
-      element: <LoginPage isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />,
+      element: (
+        <LoginPage 
+          setIsAuthenticated={setIsAuthenticated} 
+          setIsStaff={setIsStaff} 
+          setIsAdmin={setIsAdmin}
+        />
+      ),
     },
     {
       path: '404',

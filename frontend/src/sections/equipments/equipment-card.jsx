@@ -33,15 +33,13 @@ export default function ShopEquipmentCard({ equipment }) {
   const renderPrice = (
     <Typography variant="subtitle1">
       {equipment.renting_price && (
-        <Typography
-          component="span"
-          variant="body1"
-        >
-          ${fCurrency(equipment.renting_price)}
-        </Typography>
+        <>
+          {fCurrency(equipment.renting_price)}
+        </>
       )}
     </Typography>
   );
+  
   
   
 
