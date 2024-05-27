@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -14,8 +15,6 @@ import { RouterLink } from 'src/routes/components';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
-import { account } from 'src/_mock/account';
-
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 
@@ -24,8 +23,9 @@ import navConfig from './config-navigation';
 
 // ----------------------------------------------------------------------
 
-export default function Nav({ openNav, onCloseNav }) {
+export default function Nav({ openNav, onCloseNav, isAuthenticated }) {
   const pathname = usePathname();
+  const [accountInfo, setAccountInfo] = useState(null);
 
   const upLg = useResponsive('up', 'lg');
 
@@ -36,7 +36,23 @@ export default function Nav({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const renderAccount = (
+  useEffect(() => {
+    // Retrieve user account info from token when authenticated
+    if (isAuthenticated) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        console.log('Decoded token:', decodedToken);
+        const { username, name, id} = decodedToken;
+        setAccountInfo({ username, name, id});
+      }
+    } else {
+      // Clear account info when not authenticated
+      setAccountInfo(null);
+    }
+  }, [isAuthenticated]);
+
+  const renderAccount = isAuthenticated && accountInfo ? (
     <Box
       sx={{
         my: 3,
@@ -49,16 +65,19 @@ export default function Nav({ openNav, onCloseNav }) {
         bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
       }}
     >
-      <Avatar src={account.photoURL} alt="photoURL" />
-
-      <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">{account.displayName}</Typography>
-
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {account.role}
-        </Typography>
-      </Box>
+      <Link to="/profile" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+        <Avatar src='//assets/images/avatars/avatar_default.png' alt={accountInfo.username} />
+        <Box sx={{ ml: 2 }}>
+          <Typography variant="subtitle2">{accountInfo.name}</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {accountInfo.username}
+          </Typography>
+        </Box>
+      </Link>
     </Box>
+  ) : (
+    // Render an empty space when not authenticated
+    <Box sx={{ my: 3, mx: 2.5, py: 2, px: 2.5, height: 72 }} />
   );
 
   const renderMenu = (
@@ -68,7 +87,6 @@ export default function Nav({ openNav, onCloseNav }) {
       ))}
     </Stack>
   );
-
 
   const renderContent = (
     <Scrollbar
@@ -80,7 +98,7 @@ export default function Nav({ openNav, onCloseNav }) {
           flexDirection: 'column',
         },
       }}
-    > 
+    >
       <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, ml: 4 }}>
         <Logo />
         <Typography
@@ -93,15 +111,14 @@ export default function Nav({ openNav, onCloseNav }) {
           Wolf Archery
         </Typography>
       </Box>
-      
+
       {renderAccount}
-  
+
       {renderMenu}
-  
+
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
   );
-  
 
   return (
     <Box
@@ -141,6 +158,7 @@ export default function Nav({ openNav, onCloseNav }) {
 Nav.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
+  isAuthenticated: PropTypes.bool,
 };
 
 // ----------------------------------------------------------------------
@@ -181,5 +199,5 @@ function NavItem({ item }) {
 }
 
 NavItem.propTypes = {
-  item: PropTypes.object,
+  item: PropTypes.object.isRequired,
 };

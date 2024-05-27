@@ -94,7 +94,7 @@ User.init({
     allowNull: false,
     defaultValue: 0
   },
-  profileImage: {
+  profile_image: {
     type: DataTypes.STRING, 
     allowNull: true, 
   },
