@@ -9,7 +9,7 @@ import Header from './header';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children,isAuthenticated }) {
   const [openNav, setOpenNav] = useState(false);
 
   return (
@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }) {
           flexDirection: { xs: 'column', lg: 'row' },
         }}
       >
-        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} isAuthenticated={isAuthenticated} />
 
         <Main>{children}</Main>
       </Box>
@@ -33,4 +33,5 @@ export default function DashboardLayout({ children }) {
 
 DashboardLayout.propTypes = {
   children: PropTypes.node,
+  isAuthenticated: PropTypes.bool,
 };

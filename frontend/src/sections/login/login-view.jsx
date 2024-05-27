@@ -1,4 +1,7 @@
 import { useState } from 'react';
+
+import PropTypes from 'prop-types';
+
 import axios from 'axios'; // Import axios for making HTTP requests
 
 import Box from '@mui/material/Box';
@@ -19,9 +22,11 @@ import { bgGradient } from 'src/theme/css';
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
+
+
 // ----------------------------------------------------------------------
 
-export default function LoginView() {
+export default function LoginView({ isAuthenticated, setIsAuthenticated }) {
   const theme = useTheme();
   const router = useRouter();
 
@@ -39,6 +44,7 @@ export default function LoginView() {
       const response = await axios.post('http://localhost:3001/api/login', { username, password });
       // Store the token in localStorage or context
       localStorage.setItem('token', response.data.token);
+      setIsAuthenticated(true);
       router.push('/');
     } catch (err) {
       setError('Invalid username or password');
@@ -142,3 +148,8 @@ export default function LoginView() {
     </Box>
   );
 }
+
+LoginView.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+  setIsAuthenticated: PropTypes.func.isRequired,
+};
