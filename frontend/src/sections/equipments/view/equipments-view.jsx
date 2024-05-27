@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import axios from 'axios'; // Import axios for making HTTP requests
 import Iconify from 'src/components/iconify';
 import EquipmentCard from '../equipment-card';
@@ -11,7 +13,7 @@ import EquipmentSort from '../equipment-sort';
 import EquipmentFilters from '../equipment-filters';
 import NewEquipmentTypeForm from '../new-equipment-type-form';
 
-export default function EquipmentsView() {
+export default function EquipmentsView({ isStaff }) {
   const [openFilter, setOpenFilter] = useState(false);
   const [openNewEquipmentTypeForm, setOpenNewEquipmentTypeForm] = useState(false);
   const [equipments, setEquipments] = useState([]); // State to store fetched equipments
@@ -64,14 +66,18 @@ export default function EquipmentsView() {
         justifyContent="space-between"
         sx={{ mb: 5 }}
       >
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="eva:plus-fill" />}
-          onClick={handleOpenNewEquipmentTypeForm}
-        >
-          New
-        </Button>
+        {isStaff ? (
+          <Button
+            variant="contained"
+            color="inherit"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            onClick={handleOpenNewEquipmentTypeForm}
+          >
+            New
+          </Button>
+        ) : (
+          <Box sx={{ width: 120 }} /> // Adjust the width as needed
+        )}
         <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
           <EquipmentFilters
             openFilter={openFilter}
@@ -98,3 +104,7 @@ export default function EquipmentsView() {
     </Container>
   );
 }
+
+EquipmentsView.propTypes = {
+  isStaff: PropTypes.bool.isRequired,
+};

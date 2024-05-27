@@ -12,10 +12,20 @@ import ThemeProvider from 'src/theme';
 
 export default function App() {
   useScrollToTop();
- const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isStaff, setIsStaff] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   return (
     <ThemeProvider>
-      <Router isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
+      <Router 
+        isAuthenticated={isAuthenticated} 
+        setIsAuthenticated={setIsAuthenticated} 
+        isStaff={isStaff} 
+        setIsStaff={setIsStaff} 
+        isAdmin={isAdmin} 
+        setIsAdmin={setIsAdmin} 
+      />
     </ThemeProvider>
   );
 }
