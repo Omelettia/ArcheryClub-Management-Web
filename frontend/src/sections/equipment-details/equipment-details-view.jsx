@@ -16,17 +16,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Iconify from 'src/components/iconify';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 export default function EquipmentDetailsView({ isStaff }) {
   const { equipmentTypeId } = useParams();
   const [equipmentType, setEquipmentType] = useState(null);
   const [isEditing, setIsEditing] = useState({
-    name: false,
-    description: false,
-    purchasing_price: false,
-    renting_price: false,
-    category: false,
-    skill_level: false,
+    editing: false,
     equipment_image: false,
   });
   const [imageUrlDialogOpen, setImageUrlDialogOpen] = useState(false);
@@ -59,13 +55,8 @@ export default function EquipmentDetailsView({ isStaff }) {
       };
       await axios.put(`http://localhost:3001/api/equipmentTypes/profile/${equipmentTypeId}`, equipmentType,config);
       setIsEditing({
-        name: false,
-        description: false,
-        purchasing_price: false,
-        renting_price: false,
-        category: false,
-        skill_level: false,
-        equipment_image: false,
+        editing:false,
+        equipment_image: false
       });
     } catch (error) {
       console.error('Error saving equipment type:', error);
@@ -118,52 +109,52 @@ export default function EquipmentDetailsView({ isStaff }) {
           Equipment Details
         </Typography>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
         <Box sx={{ flex: '1', p: 2 }}>
           <Card sx={{ p: 2, mb: 2 }}>
-          {isEditing.name ? (
+          {isEditing.editing ? (
               <TextField
                 fullWidth
                 label="Name"
                 value={equipmentType.name}
                 onChange={(e) => handleChange('name', e.target.value)}
-                onBlur={() => setIsEditing((prev) => ({ ...prev, name: false }))}
+                onBlur={() => setIsEditing((prev) => ({ ...prev, editing: false }))}
               />
             ) : (
               <Typography variant="h6" gutterBottom>
                 {equipmentType.name}{' '}
                 {isStaff && (
-                  <IconButton size="small" onClick={() => setIsEditing((prev) => ({ ...prev, name: true }))}>
+                  <IconButton size="small" onClick={() => setIsEditing((prev) => ({ ...prev, editing: true }))}>
                     <Iconify icon="eva:edit-fill" />
                   </IconButton>
                 )}
               </Typography>
             )}
-            {isEditing.description ? (
+            {isEditing.editing ? (
               <TextField
                 fullWidth
                 label="Description"
                 value={equipmentType.description}
                 onChange={(e) => handleChange('description', e.target.value)}
-                onBlur={() => setIsEditing((prev) => ({ ...prev, description: false }))}
+                onBlur={() => setIsEditing((prev) => ({ ...prev, editing: false }))}
               />
             ) : (
               <Typography variant="body1" gutterBottom>
                 {equipmentType.description}{' '}
                 {isStaff && (
-                  <IconButton size="small" onClick={() => setIsEditing((prev) => ({ ...prev, description: true }))}>
+                  <IconButton size="small" onClick={() => setIsEditing((prev) => ({ ...prev, editing: true }))}>
                     <Iconify icon="eva:edit-fill" />
                   </IconButton>
                 )}
               </Typography>
             )}
-            {isEditing.purchasing_price ? (
+            {isEditing.editing ? (
               <TextField
                 fullWidth
                 label="Purchasing Price"
                 value={equipmentType.purchasing_price}
                 onChange={(e) => handleChange('purchasing_price', e.target.value)}
-                onBlur={() => setIsEditing((prev) => ({ ...prev, purchasing_price: false }))}
+                onBlur={() => setIsEditing((prev) => ({ ...prev, editing: false }))}
               />
             ) : (
               <Typography variant="body1" gutterBottom>
@@ -171,20 +162,20 @@ export default function EquipmentDetailsView({ isStaff }) {
                 {isStaff && (
                   <IconButton
                     size="small"
-                    onClick={() => setIsEditing((prev) => ({ ...prev, purchasing_price: true }))}
+                    onClick={() => setIsEditing((prev) => ({ ...prev, editing: true }))}
                   >
                     <Iconify icon="eva:edit-fill" />
                   </IconButton>
                 )}
               </Typography>
             )}
-            {isEditing.renting_price ? (
+            {isEditing.editing ? (
               <TextField
                 fullWidth
                 label="Renting Price"
                 value={equipmentType.renting_price}
                 onChange={(e) => handleChange('renting_price', e.target.value)}
-                onBlur={() => setIsEditing((prev) => ({ ...prev, renting_price: false }))}
+                onBlur={() => setIsEditing((prev) => ({ ...prev, editing: false }))}
               />
             ) : (
               <Typography variant="body1" gutterBottom>
@@ -192,58 +183,66 @@ export default function EquipmentDetailsView({ isStaff }) {
                 {isStaff && (
                   <IconButton
                     size="small"
-                    onClick={() => setIsEditing((prev) => ({ ...prev, renting_price: true }))}
+                    onClick={() => setIsEditing((prev) => ({ ...prev, editing: true }))}
                   >
                     <Iconify icon="eva:edit-fill" />
                   </IconButton>
                 )}
               </Typography>
             )}
-            {isEditing.category ? (
+            {isEditing.editing ? (
               <TextField
                 fullWidth
                 label="Category"
                 value={equipmentType.category}
                 onChange={(e) => handleChange('category', e.target.value)}
-                onBlur={() => setIsEditing((prev) => ({ ...prev, category: false }))}
+                onBlur={() => setIsEditing((prev) => ({ ...prev, editing: false }))}
               />
             ) : (
               <Typography variant="body1" gutterBottom>
                 Category: {equipmentType.category}{' '}
                 {isStaff && (
-                  <IconButton size="small" onClick={() => setIsEditing((prev) => ({ ...prev, category: true }))}>
+                  <IconButton size="small" onClick={() => setIsEditing((prev) => ({ ...prev, editing: true }))}>
                     <Iconify icon="eva:edit-fill" />
                   </IconButton>
                 )}
               </Typography>
             )}
-            {isEditing.skill_level ? (
+            {isEditing.editing ? (
               <TextField
                 fullWidth
                 label="Skill Level"
                 value={equipmentType.skill_level}
                 onChange={(e) => handleChange('skill_level', e.target.value)}
-                onBlur={() => setIsEditing((prev) => ({ ...prev, skill_level: false }))}
+                onBlur={() => setIsEditing((prev) => ({ ...prev, editing: false }))}
               />
             ) : (
               <Typography variant="body1" gutterBottom>
                 Skill Level: {equipmentType.skill_level}{' '}
                 {isStaff && (
-                  <IconButton size="small" onClick={() => setIsEditing((prev) => ({ ...prev, skill_level: true }))}>
+                  <IconButton size="small" onClick={() => setIsEditing((prev) => ({ ...prev, editing: true }))}>
                     <Iconify icon="eva:edit-fill" />
                   </IconButton>
                 )}
               </Typography>
             )}
-            {isStaff && (
-              <Button variant="contained" color="primary" onClick={handleSave}>
-                Save
-              </Button>
-            )}
+            {isEditing.editing && isStaff &&(
+          <LoadingButton
+            fullWidth
+            size="large"
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3 }}
+            onClick={handleSave}
+          >
+            Save Changes
+          </LoadingButton>
+        )}
           </Card>
         </Box>
         <Box sx={{ flex: '1', p: 2 }}>
-          <Card sx={{ p: 2, mb: 2 }}>
+          <Card sx={{ p: 2, mb: 2 , backgroundColor: 'transparent', boxShadow: 'none'}}>
             {isEditing.equipment_image ? (
               <TextField
                 fullWidth
