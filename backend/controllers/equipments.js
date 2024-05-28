@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
         },
         {
           model: EquipmentType,
-          attributes: ['name', 'category', 'rentingPrice']
+          attributes: ['name', 'category', 'renting_price','equipment_image']
         }
       ]
     });
@@ -27,17 +27,32 @@ router.get('/', async (req, res) => {
 router.get('/:equipmentTypeId/equipments', async (req, res) => {
   try {
     // Find the equipment type by ID
-    const equipmentType = await EquipmentType.findByPk(req.params.equipmentTypeId, {
-      include: [{ model: Equipment }] // Include the Equipment model to fetch related equipments
+    const equipmentTypeId = req.params.equipmentTypeId;
+
+    // Find all equipments with the matching equipment_type_id
+    const equipments = await Equipment.findAll({
+      where: {
+        equipment_type_id: equipmentTypeId
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['name']
+        },
+        {
+          model: EquipmentType,
+          attributes: ['name', 'category', 'rentingPrice']
+        }
+      ]
     });
 
-    // If no equipment type is found, return a 404 status code with an empty response
-    if (!equipmentType) {
-      return res.status(404).json({ error: 'Equipment type not found' });
+    // If no equipment is found, return a 404 status code with an empty response
+    if (!equipments || equipments.length === 0) {
+      return res.status(404).json({ error: 'No equipments found for the specified equipment type ID' });
     }
 
     // Return the list of equipments related to the equipment type
-    res.json(equipmentType.equipments);
+    res.json(equipments);
   } catch (error) {
     // If an error occurs, return a 500 status code with an error message
     console.error('Error fetching equipments:', error);

@@ -13,7 +13,7 @@ Equipment.init({
     type: DataTypes.STRING, 
     allowNull: false
   },
-  userId: {
+  user_id: {
     type: DataTypes.INTEGER, 
     allowNull: true,
     references: { 
@@ -23,7 +23,7 @@ Equipment.init({
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   },
-  equipmentTypeId: { // Foreign key reference to EquipmentType
+  equipment_type_id: { // Foreign key reference to EquipmentType
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -36,7 +36,8 @@ Equipment.init({
 }, {
   sequelize,
   underscored: true,
-  modelName: 'equipment'
+  timestamps: false,
+  modelName: 'equipments'
 });
 
 module.exports = Equipment;
