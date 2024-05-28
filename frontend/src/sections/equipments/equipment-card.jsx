@@ -1,20 +1,14 @@
 import PropTypes from 'prop-types';
+import { Link as RouterLink } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { fCurrency } from 'src/utils/format-number';
 
-import Label from 'src/components/label';
-import { ColorPreview } from 'src/components/color-utils';
-
-// ----------------------------------------------------------------------
-
 export default function ShopEquipmentCard({ equipment }) {
-  
   const renderImg = (
     <Box
       component="img"
@@ -32,31 +26,25 @@ export default function ShopEquipmentCard({ equipment }) {
 
   const renderPrice = (
     <Typography variant="subtitle1">
-      {equipment.renting_price && (
-        <>
-          {fCurrency(equipment.renting_price)}
-        </>
-      )}
+      {equipment.renting_price && fCurrency(equipment.renting_price)}
     </Typography>
   );
-  
-  
-  
 
   return (
     <Card>
-      <Box sx={{ pt: '100%', position: 'relative' }}>
-        {renderImg}
-      </Box>
-      <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
-          {equipment.name}
-        </Link>
-
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          {renderPrice}
+      <RouterLink to={`/equipment-details/${equipment.id}`} style={{ textDecoration: 'none' }}>
+        <Box sx={{ pt: '100%', position: 'relative' }}>
+          {renderImg}
+        </Box>
+        <Stack spacing={2} sx={{ p: 3 }}>
+          <Typography variant="subtitle2" noWrap>
+            {equipment.name}
+          </Typography>
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            {renderPrice}
+          </Stack>
         </Stack>
-      </Stack>
+      </RouterLink>
     </Card>
   );
 }

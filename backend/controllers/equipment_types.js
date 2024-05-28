@@ -11,6 +11,29 @@ router.post('/', tokenExtractor, isStaff, async (req, res) => {
   }
 });
 
+router.put('/profile/:id', tokenExtractor, async (req, res) => {
+  try {
+    const equipmentType = await EquipmentType.findByPk(req.params.id);
+    if (!equipmentType) {
+      return res.status(404).json({ error: 'EquipmentType not found' });
+    }
+
+    const { name, description, purchasing_price, renting_price, category, equipment_image, skill_level } = req.body;
+    equipmentType.name = name || equipmentType.name;
+    equipmentType.description = description || equipmentType.description;
+    equipmentType.purchasing_price = purchasing_price || equipmentType.purchasing_price;
+    equipmentType.renting_price = renting_price || equipmentType.renting_price;
+    equipmentType.category = category || equipmentType.category;
+    equipmentType.equipment_image = equipment_image || equipmentType.equipment_image;
+    equipmentType.skill_level = skill_level || equipmentType.skill_level;
+
+    await equipmentType.save();
+    res.json(equipmentType);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     let equipmentTypes;

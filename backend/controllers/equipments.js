@@ -23,6 +23,28 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Endpoint to fetch all equipment related to an equipment type by ID
+router.get('/:equipmentTypeId/equipments', async (req, res) => {
+  try {
+    // Find the equipment type by ID
+    const equipmentType = await EquipmentType.findByPk(req.params.equipmentTypeId, {
+      include: [{ model: Equipment }] // Include the Equipment model to fetch related equipments
+    });
+
+    // If no equipment type is found, return a 404 status code with an empty response
+    if (!equipmentType) {
+      return res.status(404).json({ error: 'Equipment type not found' });
+    }
+
+    // Return the list of equipments related to the equipment type
+    res.json(equipmentType.equipments);
+  } catch (error) {
+    // If an error occurs, return a 500 status code with an error message
+    console.error('Error fetching equipments:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.post('/', tokenExtractor,isStaff, async (req, res) => {
   try {
     const user = await User.findByPk(req.decodedToken.id);
@@ -34,7 +56,6 @@ router.post('/', tokenExtractor,isStaff, async (req, res) => {
 
     const equipment = await Equipment.create({
       ...req.body,
-      userId: user.id,
       equipmentTypeId: equipmentType.id
     });
     res.json(equipment);
