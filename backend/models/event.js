@@ -10,13 +10,27 @@ Event.init({
     autoIncrement: true
   },
   name: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false
   },
   description: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false
   },
+  participatable: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false
+  },
+  creatorId: { // Foreign key for the user who created the event
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'users',
+      key: 'id'
+    },
+    allowNull: false,
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+  }
 }, {
   sequelize,
   underscored: true,

@@ -1,34 +1,33 @@
-const Request = require('./request');
-const RequestType = require('./request_type');
+
 const User = require('./user');
 const Equipment = require('./equipment');
 const Booking = require('./booking');
 const Event = require('./event');
 const BookingEquipments = require('./booking_equipments');
+const EventUsers = require('./event_users');
 const EquipmentType = require('./equipment_type');
 
-User.hasMany(Request);
-Request.belongsTo(User);
 
-RequestType.hasMany(Request);
-Request.belongsTo(RequestType);
+User.hasMany(Event);
+Event.belongsTo(User);
+
+User.hasMany(Booking);
+Event.belongsTo(Booking);
+
+User.hasMany(Equipment);
+Equipment.belongsTo(User);
 
 EquipmentType.hasMany(Equipment);
 Equipment.belongsTo(EquipmentType);
 
-Event.hasMany(Booking);
-Booking.belongsTo(Event);
-
-User.hasMany(Booking);
-Booking.belongsTo(User);
+User.belongsToMany(Event, { through: EventUsers });
+Event.belongsToMany(User, { through: EventUsers});
 
 // Many-to-Many association between Equipment and Booking through BookingEquipments
 Equipment.belongsToMany(Booking, { through: BookingEquipments });
 Booking.belongsToMany(Equipment, { through: BookingEquipments });
 
 module.exports = {
-  Request,
-  RequestType,
   User,
   Equipment,
   Booking,

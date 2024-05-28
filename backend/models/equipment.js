@@ -10,13 +10,32 @@ Equipment.init({
     autoIncrement: true
   },
   state: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING, 
     allowNull: false
   },
+  userId: {
+    type: DataTypes.INTEGER, 
+    allowNull: true,
+    references: { 
+      model: 'users',
+      key: 'id'
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  },
+  equipmentTypeId: { // Foreign key reference to EquipmentType
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'equipment_types',
+      key: 'id'
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+  }
 }, {
   sequelize,
   underscored: true,
-  timestamps: false,
   modelName: 'equipment'
 });
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet-async';
-import {EquipmentDetailsView} from 'src/sections/equipment-details'; 
+import {EquipmentDetailsView} from 'src/sections/equipment-details/view'; 
 
 // ----------------------------------------------------------------------
 
