@@ -20,7 +20,7 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         allowNull: false
       },
-      creatorId: { // Foreign key for the user who created the event
+      creator_id: { // Foreign key for the user who created the event
         type: DataTypes.INTEGER,
         references: {
           model: 'users',
