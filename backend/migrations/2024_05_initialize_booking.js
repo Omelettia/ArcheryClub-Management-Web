@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true
       },
-      totalPrice: {
+      total_price: {
         type: DataTypes.FLOAT,
         allowNull: false
       },
@@ -16,16 +16,27 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false
       },
+      is_returned: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: { model: 'users', key: 'id' } // Reference to the 'id' column in the 'users' table
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
-      event_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: { model: 'events', key: 'id' } // Reference to the 'id' column in the 'events' table
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
       },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+      }
     });
   },
   down: async ({ context: queryInterface }) => {

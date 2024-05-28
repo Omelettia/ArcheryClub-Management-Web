@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const { User, Booking, Event } = require('../models');
+const { User, Booking, Event, EventUsers } = require('../models');
 const { tokenExtractor } = require('../util/middleware');
 
 router.get('/', async (req, res) => {
   try {
     const events = await Event.findAll({
-      attributes: { exclude: ['userId'] },
+      attributes: { exclude: ['creatorId'] },
       include: [
         {
           model: Booking,
@@ -17,6 +17,11 @@ router.get('/', async (req, res) => {
             }
           ]
         },
+        {
+          model: User,
+          as: 'creator',
+          attributes: ['name']
+        }
       ]
     });
     res.json(events);
@@ -33,12 +38,7 @@ router.post('/', tokenExtractor, async (req, res) => {
     // Create the event
     const event = await Event.create({
       ...req.body,
-    });
-
-    // Create a booking for the event creator
-    const booking = await Booking.create({
-      eventId: event.id,
-      userId: user.id,
+      creatorId: user.id
     });
 
     res.json(event);
@@ -48,7 +48,7 @@ router.post('/', tokenExtractor, async (req, res) => {
   }
 });
 
-router.post('/:eventId/bookings', tokenExtractor, async (req, res) => {
+router.post('/:eventId/participants', tokenExtractor, async (req, res) => {
   try {
     const user = await User.findByPk(req.decodedToken.id);
 
@@ -58,13 +58,13 @@ router.post('/:eventId/bookings', tokenExtractor, async (req, res) => {
       return res.status(404).json({ error: 'Event not found' });
     }
 
-    // Create a booking for the user joining the event
-    const booking = await Booking.create({
-      eventId: event.id,
+    // Add user as a participant
+    await EventUsers.create({
       userId: user.id,
+      eventId: event.id
     });
 
-    res.json(booking);
+    res.status(201).json({ message: 'User added as a participant' });
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: 'Invalid data' });
@@ -87,8 +87,14 @@ router.get('/:id', async (req, res) => {
         },
         {
           model: User,
+          as: 'creator',
           attributes: ['name']
         },
+        {
+          model: User,
+          through: { attributes: [] },
+          attributes: ['name']
+        }
       ]
     });
     if (event) {

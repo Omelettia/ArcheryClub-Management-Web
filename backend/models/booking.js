@@ -17,6 +17,10 @@ Booking.init({
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  is_returned: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
 }, {
   sequelize,
   underscored: true,
