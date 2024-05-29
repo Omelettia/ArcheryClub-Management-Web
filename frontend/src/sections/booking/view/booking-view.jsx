@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 
 export default function BookingView({ chosenItems }) {
   const [equipments, setEquipments] = useState([]); // State to store fetched equipments
+  const [totalAmount, setTotalAmount] = useState(0); // State to store total amount
 
   useEffect(() => {
     if (chosenItems.length > 0) {
@@ -34,6 +35,9 @@ export default function BookingView({ chosenItems }) {
         }));
         setEquipments(combinedData);
         console.log("combinedData:", combinedData);
+
+        // Calculate total amount initially
+        calculateTotalAmount(combinedData);
       })
       .catch(error => {
         console.error('Error fetching equipment details:', error);
@@ -42,20 +46,20 @@ export default function BookingView({ chosenItems }) {
   }, [chosenItems]); // Update equipments whenever chosenItems change
 
   const handleQuantityChange = (equipmentId, event) => {
-    const newQuantity = parseInt(event.target.value, 10); // Added radix parameter
-    const equipmentItem = equipments.find(item => item.id === equipmentId);
-
-    if (newQuantity > equipmentItem.equipmentCount) {
-      console.error('Selected quantity exceeds available equipment count');
-      return;
-    }
-
-    setEquipments(prevEquipments =>
-      prevEquipments.map(equipment =>
-        equipment.id === equipmentId ? { ...equipment, quantity: newQuantity } : equipment
-      )
+    const newQuantity = parseInt(event.target.value, 10);
+    const updatedEquipments = equipments.map(equipment =>
+      equipment.id === equipmentId ? { ...equipment, quantity: newQuantity } : equipment
     );
+    setEquipments(updatedEquipments);
+  
+    // Recalculate total amount based on updated quantities
+    const updatedTotalAmount = calculateTotalAmount(updatedEquipments);
+    setTotalAmount(updatedTotalAmount);
   };
+  
+
+  const calculateTotalAmount = (updatedEquipments) => updatedEquipments.reduce((acc, equipment) => 
+    acc + (equipment.renting_price * (equipment.quantity || 0)), 0);
 
   const handleSubmit = () => {
     // Handle submitting the booking
@@ -76,7 +80,7 @@ export default function BookingView({ chosenItems }) {
             alignItems="center"
             justifyContent="center"
             spacing={8}
-            sx={{ marginBottom: '1rem',marginLeft: 12,marginTop: 9}}
+            sx={{ marginBottom: '1rem', marginLeft: 12, marginTop: 9 }}
           >
             <img
               src={equipment.equipment_image}
@@ -107,7 +111,7 @@ export default function BookingView({ chosenItems }) {
 
       <Stack direction="row" justifyContent="flex-end" sx={{ mt: 3 }}>
         <Typography variant="h6">
-          Total Amount: ${equipments.reduce((total, item) => total + (item.price * (item.quantity || 0)), 0)}
+          Total Amount: ${totalAmount}
         </Typography>
       </Stack>
 
