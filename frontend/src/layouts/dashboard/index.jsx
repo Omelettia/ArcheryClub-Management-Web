@@ -9,12 +9,12 @@ import Header from './header';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout({ children,isAuthenticated }) {
+export default function DashboardLayout({ children,isAuthenticated, chosenItems }) {
   const [openNav, setOpenNav] = useState(false);
 
   return (
     <>
-      <Header onOpenNav={() => setOpenNav(true)} />
+      <Header onOpenNav={() => setOpenNav(true)} chosenItems={chosenItems} />
 
       <Box
         sx={{
@@ -34,4 +34,5 @@ export default function DashboardLayout({ children,isAuthenticated }) {
 DashboardLayout.propTypes = {
   children: PropTypes.node,
   isAuthenticated: PropTypes.bool,
+  chosenItems: PropTypes.array,
 };

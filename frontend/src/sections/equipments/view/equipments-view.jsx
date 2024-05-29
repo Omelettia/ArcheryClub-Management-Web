@@ -13,6 +13,7 @@ import EquipmentSort from '../equipment-sort';
 import EquipmentFilters from '../equipment-filters';
 import NewEquipmentTypeForm from '../new-equipment-type-form';
 
+
 export default function EquipmentsView({ isStaff }) {
   const [openFilter, setOpenFilter] = useState(false);
   const [openNewEquipmentTypeForm, setOpenNewEquipmentTypeForm] = useState(false);
@@ -95,7 +96,6 @@ export default function EquipmentsView({ isStaff }) {
           </Grid>
         ))}
       </Grid>
-
       <NewEquipmentTypeForm
         open={openNewEquipmentTypeForm}
         onClose={handleCloseNewEquipmentTypeForm}
