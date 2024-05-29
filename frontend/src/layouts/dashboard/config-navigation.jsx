@@ -29,7 +29,7 @@ const navConfig = [
   },
   {
     title: 'events',
-    path: '/event',
+    path: '/events',
     icon: icon('ic_blog'),
   },
   {

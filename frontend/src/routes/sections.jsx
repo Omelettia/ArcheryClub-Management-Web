@@ -11,6 +11,7 @@ export const LoginPage = lazy(() => import('src/pages/login'));
 export const EquipmentsPage = lazy(() => import('src/pages/equipments'));
 export const StoragePage = lazy(() => import('src/pages/storage'));
 export const EquipmentDetailsPage = lazy(() => import('src/pages/equipment-details'));
+export const EventDetailsPage = lazy(() => import('src/pages/event-details'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 // ----------------------------------------------------------------------
@@ -32,7 +33,8 @@ export default function Router({ isAuthenticated, setIsAuthenticated, isStaff, s
         { path: 'equipments', element: <EquipmentsPage isStaff={isStaff} /> },
         { path: 'storage', element: <StoragePage /> },
         { path: 'equipment-details/:equipmentTypeId', element: <EquipmentDetailsPage isStaff={isStaff} /> },
-        { path: 'event', element: <EventPage /> },
+        { path: 'event-details/:eventId', element: <EventDetailsPage /> },
+        { path: 'events', element: <EventPage /> },
       ],
     },
     {

@@ -56,15 +56,33 @@ router.post('/', tokenExtractor, async (req, res) => {
 // Add a user as a participant to an event
 router.post('/:eventId/participants', tokenExtractor, async (req, res) => {
   try {
-    const user = await User.findByPk(req.decodedToken.id);
-    const event = await Event.findByPk(req.params.eventId);
+    const userId = req.decodedToken.id; // Extract userId from the decoded token
+    const eventId = req.params.eventId;
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const event = await Event.findByPk(eventId);
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
     }
+
+    // Check if the user is already a participant
+    const existingParticipant = await EventUsers.findOne({
+      where: { userId: user.id, eventId: event.id }
+    });
+
+    if (existingParticipant) {
+      return res.status(400).json({ error: 'User is already a participant' });
+    }
+
     await EventUsers.create({
       userId: user.id,
       eventId: event.id
     });
+
     res.status(201).json({ message: 'User added as a participant' });
   } catch (error) {
     console.error(error);
@@ -79,11 +97,12 @@ router.get('/:id', async (req, res) => {
       include: [
         {
           model: User,
-          as: 'creator',
+          as: 'creator', // Specify the alias for the association
           attributes: ['name']
         },
         {
           model: User,
+          as: 'participants', // Specify the alias for the association
           through: { attributes: [] },
           attributes: ['name']
         }
@@ -99,6 +118,30 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+
+router.put('/profile/:id', tokenExtractor, async (req, res) => {
+  try {
+    const event = await Event.findByPk(req.params.id); // Change Equipment to Event
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' }); // Change Equipment to Event
+    }
+
+    const { name, description, event_image, participatable, starting_date } = req.body; // Update fields for event
+    event.name = name || event.name;
+    event.description = description || event.description;
+    event.event_image = event_image || event.event_image;
+    event.participatable = participatable !== undefined ? participatable : event.participatable;
+    event.starting_date = starting_date || event.starting_date;
+
+    await event.save();
+    res.json(event);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 
 // Get all participants for a specific event
 router.get('/:eventId/participants', async (req, res) => {

@@ -51,16 +51,6 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      }
     });
   },
   down: async ({ context: queryInterface }) => {

@@ -8,11 +8,11 @@ const EventUsers = require('./event_users');
 const EquipmentType = require('./equipment_type');
 
 
-User.hasMany(Event);
+
 Event.belongsTo(User, { as: 'creator', foreignKey: 'creator_id' });
 
 User.hasMany(Booking);
-Event.belongsTo(Booking);
+Booking.belongsTo(User);
 
 User.hasMany(Equipment);
 Equipment.belongsTo(User);
@@ -33,5 +33,6 @@ module.exports = {
   Booking,
   BookingEquipments,
   EquipmentType,
-  Event
+  Event,
+  EventUsers
 };
