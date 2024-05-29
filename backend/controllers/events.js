@@ -35,6 +35,7 @@ router.get('/', async (req, res) => {
 
 // Create a new event
 router.post('/', tokenExtractor, async (req, res) => {
+  console.log('Incoming request body:', req.body); // Log the incoming request body
   try {
     const user = await User.findByPk(req.decodedToken.id);
     const event = await Event.create({
@@ -43,10 +44,14 @@ router.post('/', tokenExtractor, async (req, res) => {
     });
     res.json(event);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: 'Invalid data' });
+    console.error('Error creating event:', error.message);
+    if (error.errors) {
+      error.errors.forEach(err => console.error('Validation error:', err.message));
+    }
+    res.status(400).json({ error: 'Invalid data', details: error.errors });
   }
 });
+
 
 // Add a user as a participant to an event
 router.post('/:eventId/participants', tokenExtractor, async (req, res) => {

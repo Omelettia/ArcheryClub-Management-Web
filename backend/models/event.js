@@ -23,7 +23,8 @@ Event.init({
   },
   participatable: {
     type: DataTypes.BOOLEAN,
-    allowNull: false
+    allowNull: false,
+    defaultValue: true
   },
   starting_date: {
     type: DataTypes.DATE,
