@@ -10,28 +10,44 @@ import Iconify from 'src/components/iconify';
 import PostCard from '../post-card';
 import PostSort from '../post-sort';
 import PostSearch from '../post-search';
+import NewEventForm from '../new-event-form'; 
 
 export default function EventView() {
   const [events, setEvents] = useState([]);
+  const [isNewEventFormOpen, setNewEventFormOpen] = useState(false); // State variable to control the visibility of the New Event Form
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/events');
+      setEvents(response.data);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/events');
-        setEvents(response.data);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
-
     fetchEvents();
   }, []);
+
+  const handleOpenNewEventForm = () => {
+    setNewEventFormOpen(true);
+  };
+
+  const handleCloseNewEventForm = () => {
+    setNewEventFormOpen(false);
+  };
 
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Event</Typography> 
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+        {/* Open New Event Form when button is clicked */}
+        <Button 
+          variant="contained" 
+          color="inherit" 
+          startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={handleOpenNewEventForm} // Call handleOpenNewEventForm when button is clicked
+        >
           New Event 
         </Button>
       </Stack>
@@ -52,6 +68,15 @@ export default function EventView() {
           <PostCard key={event.id} event={event} index={index} />
         ))}
       </Grid>
+      <NewEventForm 
+        open={isNewEventFormOpen} 
+        onClose={handleCloseNewEventForm} 
+        onSubmit={() => {
+          // Refetch events when a new event is submitted
+          fetchEvents();
+          handleCloseNewEventForm();
+        }} 
+      />
     </Container>
   );
 }

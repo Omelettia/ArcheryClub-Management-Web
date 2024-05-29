@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -102,9 +102,11 @@ export default function EquipmentDetailsView({ isStaff }) {
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton aria-label="back" href="/equipments" sx={{ mr: 2 }}>
-          <ArrowBackIcon />
-        </IconButton>
+      <Link to="/equipments"> {/* Use Link to navigate back to equipments */}
+          <IconButton aria-label="back" sx={{ mr: 2 }}>
+            <ArrowBackIcon />
+          </IconButton>
+        </Link>
         <Typography variant="h4" sx={{ mr: 'auto' }}>
           Equipment Details
         </Typography>

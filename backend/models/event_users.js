@@ -27,6 +27,7 @@ EventUsers.init({
 }, {
   sequelize,
   underscored: true,
+  timestamps: false,
   modelName: 'event_users',
 });
 
