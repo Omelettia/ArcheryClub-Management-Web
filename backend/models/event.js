@@ -17,11 +17,19 @@ Event.init({
     type: DataTypes.STRING,
     allowNull: false
   },
+  event_image: {
+    type: DataTypes.STRING, 
+    allowNull: true, 
+  },
   participatable: {
     type: DataTypes.BOOLEAN,
     allowNull: false
   },
-  creatorId: { // Foreign key for the user who created the event
+  starting_date: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  creator_id: { 
     type: DataTypes.INTEGER,
     references: {
       model: 'users',
@@ -34,6 +42,7 @@ Event.init({
 }, {
   sequelize,
   underscored: true,
+  timestamps: false,
   modelName: 'event'
 });
 

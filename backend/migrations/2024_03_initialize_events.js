@@ -16,6 +16,10 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
+      event_image: {
+        type: DataTypes.STRING, 
+        allowNull: true, 
+      },
       participatable: {
         type: DataTypes.BOOLEAN,
         allowNull: false
@@ -30,16 +34,10 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      createdAt: {
+      starting_date: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
+        allowNull: false
       },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-      }
     });
   },
   down: async ({ context: queryInterface }) => {
