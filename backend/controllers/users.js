@@ -44,11 +44,6 @@ router.get('/', async (req, res) => {
   const users = await User.findAll({
     include: [
       {
-        model: Request,
-        attributes: { exclude: ['userId'] },
-        attributes: []
-      },
-      {
         model: Booking,
         attributes: ['name', 'id'],
         attributes: []

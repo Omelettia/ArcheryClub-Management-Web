@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 
-import { BookingView } from 'src/sections/booking/view';
+import { StorageView } from 'src/sections/storage/view';
 
 // ----------------------------------------------------------------------
 
-export default function BookingPage() {
+export default function StoragePage() {
   return (
     <>
       <Helmet>
-        <title> Booking | WolfArchery </title>
+        <title> Storage | WolfArchery </title>
       </Helmet>
 
-      <BookingView />
+      <StorageView />
     </>
   );
 }

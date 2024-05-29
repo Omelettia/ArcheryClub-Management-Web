@@ -17,7 +17,6 @@ app.use(express.json());
 app.use(cors());
 
 // Define routes
-app.use('/api/requests', requestsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/bookings', bookingsRouter);

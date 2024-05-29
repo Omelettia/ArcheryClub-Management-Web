@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const { User, EquipmentType } = require('../models');
 const { tokenExtractor, isStaff, isAdmin } = require('../util/middleware');
+const { Op } = require('sequelize');
+
 
 router.post('/', tokenExtractor, isStaff, async (req, res) => {
   try {
@@ -62,6 +64,22 @@ const equipmentTypeFinder = async (req, res, next) => {
     next(error);
   }
 };
+
+router.get('/search', async (req, res) => {
+  const { query } = req.query;
+  try {
+    const equipmentTypes = await EquipmentType.findAll({
+      where: {
+        name: {
+          [Op.iLike]: `%${query}%`
+        }
+      }
+    });
+    res.json(equipmentTypes);
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 router.get('/:id', equipmentTypeFinder, async (req, res) => {
   res.json(req.equipmentType);

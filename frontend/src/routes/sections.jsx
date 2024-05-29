@@ -5,10 +5,11 @@ import DashboardLayout from 'src/layouts/dashboard';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
-export const BookingPage = lazy(() => import('src/pages/booking'));
+export const EventPage = lazy(() => import('src/pages/event'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const EquipmentsPage = lazy(() => import('src/pages/equipments'));
+export const StoragePage = lazy(() => import('src/pages/storage'));
 export const EquipmentDetailsPage = lazy(() => import('src/pages/equipment-details'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
@@ -29,8 +30,9 @@ export default function Router({ isAuthenticated, setIsAuthenticated, isStaff, s
         { path: 'Profile', element: <ProfilePage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'equipments', element: <EquipmentsPage isStaff={isStaff} /> },
+        { path: 'storage', element: <StoragePage /> },
         { path: 'equipment-details/:equipmentTypeId', element: <EquipmentDetailsPage isStaff={isStaff} /> },
-        { path: 'booking', element: <BookingPage /> },
+        { path: 'event', element: <EventPage /> },
       ],
     },
     {

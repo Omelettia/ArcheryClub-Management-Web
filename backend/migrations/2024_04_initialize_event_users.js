@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 module.exports = {
   up: async ({ context: queryInterface }) => {
     await queryInterface.createTable('event_users', {
-      userId: {
+      user_id: {
         type: DataTypes.INTEGER,
         references: {
           model: 'users',
@@ -13,7 +13,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      eventId: {
+      event_id: {
         type: DataTypes.INTEGER,
         references: {
           model: 'events',

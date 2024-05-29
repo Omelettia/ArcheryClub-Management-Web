@@ -8,19 +8,19 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true
       },
-      equipmentId: {
+      equipment_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: 'equipments', key: 'id' } // Reference to the 'id' column in the 'equipments' table
       },
-      bookingId: {
+      booking_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: { model: 'bookings', key: 'id' } // Reference to the 'id' column in the 'bookings' table
       },
     });
 
-    await queryInterface.addIndex('booking_equipments', ['equipmentId', 'bookingId'], {
+    await queryInterface.addIndex('booking_equipments', ['equipment_id', 'booking_id'], {
       unique: true
     });
   },

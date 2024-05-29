@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 
 module.exports = {
   up: async ({ context: queryInterface }) => {
-    await queryInterface.createTable('equipment', {
+    await queryInterface.createTable('equipments', {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,7 +12,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
-      userId: {
+      user_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
@@ -22,7 +22,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL'
       },
-      equipmentTypeId: {
+      equipment_type_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -32,19 +32,9 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-      }
     });
   },
   down: async ({ context: queryInterface }) => {
-    await queryInterface.dropTable('equipment');
+    await queryInterface.dropTable('equipments');
   }
 };

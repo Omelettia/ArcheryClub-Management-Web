@@ -9,7 +9,7 @@ const EquipmentType = require('./equipment_type');
 
 
 User.hasMany(Event);
-Event.belongsTo(User);
+Event.belongsTo(User, { as: 'creator', foreignKey: 'creator_id' });
 
 User.hasMany(Booking);
 Event.belongsTo(Booking);
@@ -21,7 +21,7 @@ EquipmentType.hasMany(Equipment);
 Equipment.belongsTo(EquipmentType);
 
 User.belongsToMany(Event, { through: EventUsers });
-Event.belongsToMany(User, { through: EventUsers});
+Event.belongsToMany(User, { as: 'participants', through: EventUsers });
 
 // Many-to-Many association between Equipment and Booking through BookingEquipments
 Equipment.belongsToMany(Booking, { through: BookingEquipments });

@@ -24,7 +24,7 @@ Booking.init({
 }, {
   sequelize,
   underscored: true,
-  modelName: 'booking'
+  modelName: 'bookings'
 });
 
 module.exports = Booking;

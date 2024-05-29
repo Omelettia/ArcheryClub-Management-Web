@@ -16,11 +16,15 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
+      event_image: {
+        type: DataTypes.STRING, 
+        allowNull: true, 
+      },
       participatable: {
         type: DataTypes.BOOLEAN,
         allowNull: false
       },
-      creatorId: { // Foreign key for the user who created the event
+      creator_id: { // Foreign key for the user who created the event
         type: DataTypes.INTEGER,
         references: {
           model: 'users',
@@ -30,16 +34,10 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      createdAt: {
+      starting_date: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
+        allowNull: false
       },
-      updatedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-      }
     });
   },
   down: async ({ context: queryInterface }) => {
