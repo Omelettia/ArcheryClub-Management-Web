@@ -18,7 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Iconify from 'src/components/iconify';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-export default function EquipmentDetailsView({ isStaff }) {
+export default function EquipmentDetailsView({ isStaff, setChosenItems }) {
   const { equipmentTypeId } = useParams();
   const [equipmentType, setEquipmentType] = useState(null);
   const [isEditing, setIsEditing] = useState({
@@ -44,6 +44,19 @@ export default function EquipmentDetailsView({ isStaff }) {
   const handleChange = (field, value) => {
     setEquipmentType((prev) => ({ ...prev, [field]: value }));
   };
+  
+  const handleAddToCart = () => {
+    // Add equipment type ID to chosenItems if it's not already present
+    setChosenItems((prevChosenItems) => {
+      if (!prevChosenItems.includes(equipmentTypeId)) {
+        console.log("Equipment Type ID added:", equipmentTypeId);
+        return [...prevChosenItems, equipmentTypeId];
+      }
+      console.log("Equipment Type ID already in cart:", equipmentTypeId);
+      return prevChosenItems;
+    });
+  };
+  
 
   const handleSave = async () => {
     try {
@@ -102,13 +115,16 @@ export default function EquipmentDetailsView({ isStaff }) {
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to="/equipments"> {/* Use Link to navigate back to equipments */}
+        <Link to="/equipments"> {/* Use Link to navigate back to equipments */}
           <IconButton aria-label="back" sx={{ mr: 2 }}>
             <ArrowBackIcon />
           </IconButton>
         </Link>
         <Typography variant="h4" sx={{ mr: 'auto' }}>
           Equipment Details
+          <Button variant="contained" sx={{ backgroundColor: '#000', color: '#fff', ml: 4 }} onClick={handleAddToCart}>
+            Add to cart
+          </Button>
         </Typography>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
@@ -302,4 +318,5 @@ export default function EquipmentDetailsView({ isStaff }) {
 
 EquipmentDetailsView.propTypes = {
   isStaff: PropTypes.bool.isRequired,
+  setChosenItems: PropTypes.func.isRequired,
 };
