@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios'
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -19,6 +20,7 @@ import TableEmptyRows from 'src/sections/table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from 'src/sections/utils';
 import StorageTableRow from '../storage-table-row'; 
 import StorageTableToolbar from '../storage-table-toolbar';
+import NewEquipmentForm from '../new-equipment-form';
 
 export default function StoragePage() {
   const [page, setPage] = useState(0);
@@ -28,14 +30,17 @@ export default function StoragePage() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [storages, setStorages] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const fetchStorages = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/equipments/');
-      if (!response.ok) {
+      const response = await axios.get('http://localhost:3001/api/equipments/');
+      // Check if the response status is not in the range of 200-299 (indicating success)
+      if (response.status < 200 || response.status >= 300) {
         throw new Error('Failed to fetch data');
       }
-      const data = await response.json();
+      // Access the data directly from the response
+      const data = response.data;
       // Map the fetched data to match the expected structure
       const mappedData = data.map(storage => ({
         id: storage.id,
@@ -44,13 +49,12 @@ export default function StoragePage() {
         renter: storage.user ? storage.user.name : 'Available', // Check if user exists, use name, else 'Available'
         state: storage.state
       }));
-     
+      // Set the mapped data to the state
       setStorages(mappedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-  
 
   useEffect(() => {
     fetchStorages();
@@ -73,6 +77,16 @@ export default function StoragePage() {
     setSelected([]);
   };
 
+  const handleDeleteRow = (id) => {
+    // Filter out the deleted row from the storage list
+    const updatedStorages = storages.filter(storage => storage.id !== id);
+    setStorages(updatedStorages);
+    // Clear the selected state if the deleted item was selected
+    if (selected.includes(id)) {
+      setSelected(selected.filter(item => item !== id));
+    }
+  };
+
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
@@ -91,6 +105,7 @@ export default function StoragePage() {
     setSelected(newSelected);
   };
 
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -105,7 +120,14 @@ export default function StoragePage() {
     setFilterName(event.target.value);
   };
 
-  // Assuming you already have applyFilter, getComparator, emptyRows functions
+  const handleOpenForm = () => {
+    setIsFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    fetchStorages(); // Refresh the storage list after a new equipment is added
+  };
 
   const dataFiltered = applyFilter({
     inputData: storages,
@@ -119,7 +141,7 @@ export default function StoragePage() {
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Storages</Typography>
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleOpenForm}>
           New Equipment
         </Button>
       </Stack>
@@ -146,7 +168,6 @@ export default function StoragePage() {
                   { id: 'name', label: 'Name' },
                   { id: 'renter', label: 'Renter' },
                   { id: 'state', label: 'State' },
-              
                   { id: '' },
                 ]}
               />
@@ -159,10 +180,11 @@ export default function StoragePage() {
                       id={row.id}
                       name={row.name}
                       equipment_imageUrl={row.avatar}
-                      renter= {row.renter}
+                      renter={row.renter}
                       state={row.state}
                       selected={selected.indexOf(row.name) !== -1}
                       handleClick={(event) => handleClick(event, row.name)}
+                      onDeleteRow={handleDeleteRow}
                     />
                   ))}
 
@@ -187,6 +209,8 @@ export default function StoragePage() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+
+      <NewEquipmentForm open={isFormOpen} onClose={handleCloseForm} onSubmit={handleCloseForm} />
     </Container>
   );
 }
