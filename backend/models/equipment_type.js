@@ -41,6 +41,10 @@ EquipmentType.init({
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
 }, {
   sequelize,
   underscored: true,

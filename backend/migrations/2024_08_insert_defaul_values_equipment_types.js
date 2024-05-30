@@ -12,6 +12,7 @@ module.exports = {
         equipment_image: 'https://res.cloudinary.com/dbfuwgyr8/image/upload/v1716904221/1A752038-8144-4E55-BF01-6322D43E1652-scaled-600x800_fdxfrh.jpg',
         skill_level: 'Intermediate',
         disabled: false,
+        created_at: new Date(),
       },
       {
         name: 'Balista',
@@ -22,6 +23,7 @@ module.exports = {
         equipment_image: 'https://res.cloudinary.com/dbfuwgyr8/image/upload/v1716903822/1200-510562526-ballista-weapon-1281942741_htlhte.jpg',
         skill_level: 'Beginner',
         disabled: false,
+        created_at: new Date(),
       },
       {
         name: 'Infinity gauntlet',
@@ -32,6 +34,7 @@ module.exports = {
         equipment_image: 'https://res.cloudinary.com/dbfuwgyr8/image/upload/v1716904352/MARVEL-LEGENDS-SERIES-INFINITY-GAUNTLET-oop-2-1799952682_zbsbpj.jpg',
         skill_level: 'Master',
         disabled: false,
+        created_at: new Date(),
       },
       {
         name: 'Stationary field',
@@ -42,6 +45,7 @@ module.exports = {
         equipment_image: 'https://res.cloudinary.com/dbfuwgyr8/image/upload/v1716904509/32340345_l-1024x681-2370390659_f8xdzl.jpg',
         skill_level: 'Beginner',
         disabled: false,
+        created_at: new Date(),
       },
       {
         name: 'Leviathan axe',
@@ -52,6 +56,7 @@ module.exports = {
         equipment_image: 'https://res.cloudinary.com/dbfuwgyr8/image/upload/v1716904737/AXe-6-scaled-3198383970_eaazuf.jpg',
         skill_level: 'Master',
         disabled: false,
+        created_at: new Date(),
       }
     ]);
   },

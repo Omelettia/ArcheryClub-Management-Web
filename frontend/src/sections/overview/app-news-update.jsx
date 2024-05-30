@@ -1,26 +1,20 @@
 import PropTypes from 'prop-types';
-
+import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
-
-import { fToNow } from 'src/utils/format-time';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-
-// ----------------------------------------------------------------------
+import { fToNow } from 'src/utils/format-time';
 
 export default function AppNewsUpdate({ title, subheader, list, ...other }) {
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
-
       <Scrollbar>
         <Stack spacing={3} sx={{ p: 3, pr: 0 }}>
           {list.map((news) => (
@@ -28,17 +22,17 @@ export default function AppNewsUpdate({ title, subheader, list, ...other }) {
           ))}
         </Stack>
       </Scrollbar>
-
       <Divider sx={{ borderStyle: 'dashed' }} />
-
       <Box sx={{ p: 2, textAlign: 'right' }}>
-        <Button
-          size="small"
-          color="inherit"
-          endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
-        >
-          View all
-        </Button>
+        <Link to="/equipments">
+          <Button
+            size="small"
+            color="inherit"
+            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
+          >
+            View all
+          </Button>
+        </Link>
       </Box>
     </Card>
   );
@@ -50,10 +44,8 @@ AppNewsUpdate.propTypes = {
   list: PropTypes.array.isRequired,
 };
 
-// ----------------------------------------------------------------------
-
 function NewsItem({ news }) {
-  const { image, title, description, postedAt } = news;
+  const { id, image, title, description, postedAt } = news;
 
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
@@ -63,17 +55,14 @@ function NewsItem({ news }) {
         src={image}
         sx={{ width: 48, height: 48, borderRadius: 1.5, flexShrink: 0 }}
       />
-
       <Box sx={{ minWidth: 240, flexGrow: 1 }}>
-        <Link color="inherit" variant="subtitle2" underline="hover" noWrap>
+        <Link to={`/equipment-details/${id}`} color="inherit" variant="subtitle2" underline="hover" noWrap>
           {title}
         </Link>
-
         <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
           {description}
         </Typography>
       </Box>
-
       <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>
         {fToNow(postedAt)}
       </Typography>
@@ -83,6 +72,7 @@ function NewsItem({ news }) {
 
 NewsItem.propTypes = {
   news: PropTypes.shape({
+    id: PropTypes.number,
     image: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,

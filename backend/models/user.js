@@ -31,14 +31,10 @@ class User extends Model {
 
     let rank = 1;
     let previousPoints = null;
-    let rankOffset = 0;
 
     const ranks = users.map((user, index) => {
       if (previousPoints !== null && user.points !== previousPoints) {
-        rank += rankOffset + 1;
-        rankOffset = 0;
-      } else {
-        rankOffset++;
+        rank++;
       }
 
       previousPoints = user.points;

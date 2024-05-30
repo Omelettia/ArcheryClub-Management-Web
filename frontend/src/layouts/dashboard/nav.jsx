@@ -10,7 +10,7 @@ import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import ListItemButton from '@mui/material/ListItemButton';
 
-import { usePathname } from 'src/routes/hooks';
+import { usePathname, useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
 import { useResponsive } from 'src/hooks/use-responsive';
@@ -18,15 +18,16 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 
+
 import { NAV } from './config-layout';
-import navConfig from './config-navigation';
+import {navConfig,icon} from './config-navigation';
 
 // ----------------------------------------------------------------------
 
-export default function Nav({ openNav, onCloseNav, isAuthenticated }) {
+export default function Nav({ openNav, onCloseNav, isAuthenticated,isStaff,setIsAuthenticated,setIsStaff,setIsAdmin }) {
   const pathname = usePathname();
   const [accountInfo, setAccountInfo] = useState(null);
-
+  const router = useRouter();
   const upLg = useResponsive('up', 'lg');
 
   useEffect(() => {
@@ -43,14 +44,24 @@ export default function Nav({ openNav, onCloseNav, isAuthenticated }) {
       if (token) {
         const decodedToken = JSON.parse(atob(token.split('.')[1]));
         console.log('Decoded token:', decodedToken);
-        const { username, name, id} = decodedToken;
-        setAccountInfo({ username, name, id});
+        const { username, name, id,profile_image} = decodedToken;
+        setAccountInfo({ username, name, id,profile_image});
       }
     } else {
       // Clear account info when not authenticated
       setAccountInfo(null);
     }
   }, [isAuthenticated]);
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    setIsStaff(false);
+    setIsAdmin(false); 
+    console.log("i have been called")
+    router.push('/');
+  };
+  
 
   const renderAccount = isAuthenticated && accountInfo ? (
     <Box
@@ -66,7 +77,7 @@ export default function Nav({ openNav, onCloseNav, isAuthenticated }) {
       }}
     >
       <Link to="/profile" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-        <Avatar src='/assets/images/avatars/avatar_default.png' alt={accountInfo.username} />
+        <Avatar src= {accountInfo.profile_image} alt={accountInfo.username} />
         <Box sx={{ ml: 2 }}>
           <Typography variant="subtitle2">{accountInfo.name}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -82,11 +93,40 @@ export default function Nav({ openNav, onCloseNav, isAuthenticated }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={1} sx={{ px: 4 }}>
-      {navConfig.map((item) => (
-        <NavItem key={item.title} item={item} />
-      ))}
+      {navConfig
+        // Filter out the 'storage' item if isStaff is false
+        .filter((item) => (isStaff || item.title !== 'storage') && !(isAuthenticated && item.title === 'login'))
+        .map((item) => (
+          <NavItem key={item.title} item={item} />
+        ))}
+      {/* Conditionally render logout button when isAuthenticated is true */}
+      {isAuthenticated && (
+        <ListItemButton
+          key="logout"
+          component="button"
+          onClick={handleLogout}
+          sx={{
+            minHeight: 44,
+            borderRadius: 0.75,
+            typography: 'body2',
+            color: 'text.secondary',
+            textTransform: 'capitalize',
+            fontWeight: 'fontWeightMedium',
+            '&:hover': {
+              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+            },
+          }}
+        >
+          <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
+            {icon('ic_lock')}
+          </Box>
+          <Box component="span">Logout</Box>
+        </ListItemButton>
+      )}
     </Stack>
   );
+    
+ 
 
   const renderContent = (
     <Scrollbar
@@ -159,6 +199,10 @@ Nav.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
   isAuthenticated: PropTypes.bool,
+  setIsAuthenticated: PropTypes.func.isRequired,
+  isStaff: PropTypes.bool,
+  setIsStaff: PropTypes.func.isRequired,
+  setIsAdmin: PropTypes.func.isRequired,
 };
 
 // ----------------------------------------------------------------------

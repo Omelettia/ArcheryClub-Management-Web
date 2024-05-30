@@ -25,6 +25,7 @@ router.post('/', async (request, response) => {
     username: user.username,
     id: user.id,
     name: user.name,
+    profile_image: user.profile_image,
     admin: user.admin,
     staff: user.staff,
   };

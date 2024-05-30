@@ -40,6 +40,10 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false
+      }
     });
   },
   down: async ({ context: queryInterface }) => {

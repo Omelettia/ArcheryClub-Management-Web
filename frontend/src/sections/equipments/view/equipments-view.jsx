@@ -13,23 +13,22 @@ import EquipmentSort from '../equipment-sort';
 import EquipmentFilters from '../equipment-filters';
 import NewEquipmentTypeForm from '../new-equipment-type-form';
 
-
 export default function EquipmentsView({ isStaff }) {
   const [openFilter, setOpenFilter] = useState(false);
   const [openNewEquipmentTypeForm, setOpenNewEquipmentTypeForm] = useState(false);
   const [equipments, setEquipments] = useState([]); // State to store fetched equipments
 
+  const fetchEquipments = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/equipmentTypes/');
+      setEquipments(response.data); // Set the fetched equipments in state
+    } catch (error) {
+      console.error('Error fetching equipments:', error);
+    }
+  };
+
   useEffect(() => {
     // Fetch equipment data when the component mounts
-    const fetchEquipments = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/equipmentTypes/');
-        setEquipments(response.data); // Set the fetched equipments in state
-      } catch (error) {
-        console.error('Error fetching equipments:', error);
-      }
-    };
-
     fetchEquipments();
   }, []); // Empty dependency array ensures the effect runs only once after the component mounts
 
@@ -49,9 +48,11 @@ export default function EquipmentsView({ isStaff }) {
     setOpenNewEquipmentTypeForm(false);
   };
 
-  const handleNewEquipmentTypeSubmit = (formData) => {
-    // Handle submitting the new equipment type data
-    console.log(formData);
+  const handleNewEquipmentTypeSubmit = (newEquipment) => {
+    // Add the new equipment to the existing list
+    setEquipments((prevEquipments) => [...prevEquipments, newEquipment]);
+    // Close the form modal
+    handleCloseNewEquipmentTypeForm();
   };
 
   return (

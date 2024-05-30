@@ -20,7 +20,7 @@ import Select from '@mui/material/Select';
 import Iconify from 'src/components/iconify';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-export default function EventDetailsView() {
+export default function EventDetailsView({isAuthenticated}) {
   const { eventId } = useParams();
   const [eventDetails, setEventDetails] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,6 +41,7 @@ export default function EventDetailsView() {
         }
         console.log('User ID:', userId);
         console.log('Creator ID:', response.data.creator_id);
+        console.log('participatable:', response.data.participatable);
       } catch (error) {
         console.error('Error fetching event details:', error);
       }
@@ -52,6 +53,15 @@ export default function EventDetailsView() {
   const handleChange = (field, value) => {
     setEventDetails((prev) => ({ ...prev, [field]: value }));
   };
+  
+  const shouldShowJoinButton1 = userId !== eventDetails?.creator_id;
+  const shouldShowJoinButton2 = shouldShowJoinButton1 && eventDetails?.participatable;
+  const shouldShowJoinButton3 = shouldShowJoinButton2 && isAuthenticated;
+  
+  console.log("shouldShowJoinButton1:", shouldShowJoinButton1);
+  console.log("shouldShowJoinButton2:", shouldShowJoinButton2);
+  console.log("shouldShowJoinButton3:", shouldShowJoinButton3);
+
 
   const handleSave = async () => {
     try {
@@ -165,7 +175,7 @@ export default function EventDetailsView() {
                 </Typography>
                 <Typography variant="body1" gutterBottom>{eventDetails.description}</Typography>
                 <Typography variant="body1" gutterBottom>Date: {new Date(eventDetails.starting_date).toLocaleDateString()}</Typography>
-                {(userId !== eventDetails.creator_id && eventDetails.participatables) && (
+                {shouldShowJoinButton3 && (
                   <Button variant="contained" color="primary" onClick={handleJoinEvent} sx={{ mt: 2 }}>
                     Join Event
                   </Button>
@@ -192,3 +202,6 @@ export default function EventDetailsView() {
     </Box>
   );
 }
+EventDetailsView.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired, 
+};

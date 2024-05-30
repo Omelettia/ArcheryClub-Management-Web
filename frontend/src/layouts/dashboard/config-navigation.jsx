@@ -39,4 +39,4 @@ const navConfig = [
   },
 ];
 
-export default navConfig;
+export { navConfig, icon }; 
