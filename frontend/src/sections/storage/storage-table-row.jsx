@@ -39,13 +39,11 @@ export default function StorageTableRow({
   };
 
   const handleStateChange = () => {
-    setIsEditing((prevEditing) => !prevEditing);
-    handleCloseMenu(); // Close the menu after toggling editing state
+    setIsEditing(!isEditing); // Toggle edit mode
   };
-  
 
   const handleStateBlur = async () => {
-    setIsEditing(false);
+    setIsEditing(false); // Exit edit mode
     // Send update request for state
     try {
       const token = localStorage.getItem('token');
@@ -60,8 +58,14 @@ export default function StorageTableRow({
     }
   };
 
+  const handleStateInputChange = (event) => {
+    setEditState(event.target.value);
+  };
+
   const handleRenterChange = async (event) => {
-    setEditRenter(event.target.value);
+    const newRenter = event.target.value;
+    setEditRenter(newRenter);
+    setIsEditing(false); // Exit edit mode
     // Send update request for renter
     try {
       const token = localStorage.getItem('token');
@@ -70,8 +74,8 @@ export default function StorageTableRow({
           Authorization: `Bearer ${token}`,
         },
       };
-      const user_id = event.target.value === 'Available' ? null : renter.userId;
-      await axios.put(`http://localhost:3001/api/equipments/profile/${id}`, { user_id }, config);
+      const user_id = newRenter === 'Available' ? null : renter.userId;
+      await axios.put(`http://localhost:3001/api/equipments/profile/${id}`, { state, user_id }, config);
     } catch (error) {
       console.error('Error updating renter:', error);
     }
@@ -97,7 +101,6 @@ export default function StorageTableRow({
       alert('Cannot delete equipment that is currently rented');
     }
   };
-  
 
   return (
     <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
@@ -128,7 +131,7 @@ export default function StorageTableRow({
             <MenuItem value="Available">Available</MenuItem>
           </Select>
         ) : (
-          renter
+          editRenter
         )}
       </TableCell>
 
@@ -136,11 +139,11 @@ export default function StorageTableRow({
         {isEditing ? (
           <TextField
             value={editState}
-            onChange={handleStateChange}
+            onChange={handleStateInputChange} // Change handler for input
             onBlur={handleStateBlur}
           />
         ) : (
-          state
+          editState
         )}
       </TableCell>
 
@@ -160,7 +163,7 @@ export default function StorageTableRow({
         >
           <MenuItem onClick={handleStateChange}>
             <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-            Edit
+            {isEditing ? "Cancel" : "Edit"} {/* Change button text based on editing mode */}
           </MenuItem>
 
           <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>

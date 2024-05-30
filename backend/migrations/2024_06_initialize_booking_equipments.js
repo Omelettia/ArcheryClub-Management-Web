@@ -8,6 +8,11 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true
       },
+      duration: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+      },
       equipment_id: {
         type: DataTypes.INTEGER,
         allowNull: false,

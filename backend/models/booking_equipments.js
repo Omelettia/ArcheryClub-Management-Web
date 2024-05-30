@@ -19,6 +19,11 @@ BookingEquipments.init({
     allowNull: false,
     references: { model: 'bookings', key: 'id' }
   },
+  duration: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
+  },
 }, {
   sequelize,
   underscored: true,

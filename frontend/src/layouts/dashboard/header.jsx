@@ -16,7 +16,7 @@ import CartWidget from './common/cart-widget';
 
 // ----------------------------------------------------------------------
 
-export default function Header({ onOpenNav, chosenItems }) {
+export default function Header({ onOpenNav, chosenItems,bookingOrders, isAuthenticated }) {
   const theme = useTheme();
   const lgUp = useResponsive('up', 'lg');
 
@@ -34,8 +34,8 @@ export default function Header({ onOpenNav, chosenItems }) {
 
       <Stack direction="row" alignItems="center" spacing={1}>
         <LanguagePopover />
-        <NotificationsPopover />
-        <CartWidget itemCount={chosenItems.length} /> {/* Pass itemCount prop */}
+        <NotificationsPopover bookingOrders = {bookingOrders}/>
+        <CartWidget itemCount={chosenItems.length} isAuthenticated = {isAuthenticated} /> {/* Pass itemCount prop */}
       </Stack>
     </>
   );
@@ -72,5 +72,7 @@ export default function Header({ onOpenNav, chosenItems }) {
 
 Header.propTypes = {
   onOpenNav: PropTypes.func,
-  chosenItems: PropTypes.array.isRequired, // Add prop type for chosenItems
+  chosenItems: PropTypes.array.isRequired, 
+  bookingOrders: PropTypes.array.isRequired,
+  isAuthenticated: PropTypes.bool,
 };

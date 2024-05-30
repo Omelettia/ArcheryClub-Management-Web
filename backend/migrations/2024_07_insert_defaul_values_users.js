@@ -29,7 +29,7 @@ module.exports = {
       },
       {
         username: 'member1',
-        name: 'Regular Member 1',
+        name: 'Clint',
         phonenumber: '6789012345',
         address: '789 Member St.',
         password: '123',
@@ -41,7 +41,7 @@ module.exports = {
       },
       {
         username: 'member2',
-        name: 'Regular Member 2',
+        name: 'Bocchi',
         phonenumber: '5432109876',
         address: '987 Member St.',
         password: '123',

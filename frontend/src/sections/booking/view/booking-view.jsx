@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
-export default function BookingView({ chosenItems }) {
+export default function BookingView({ chosenItems, setBookingOrders }) {
   const [equipments, setEquipments] = useState([]); // State to store fetched equipments
   const [totalAmount, setTotalAmount] = useState(0); // State to store total amount
 
@@ -16,12 +20,11 @@ export default function BookingView({ chosenItems }) {
       
       // Fetch equipment details based on chosenItems array
       Promise.all(chosenItems.map(itemId => 
-        fetch(`http://localhost:3001/api/equipmentTypes/${itemId}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`Error fetching equipment with ID: ${itemId}`);
-            }
-            return response.json();
+        axios.get(`http://localhost:3001/api/equipmentTypes/${itemId}`)
+          .then(response => response.data)
+          .catch(error => {
+            console.error(`Error fetching equipment with ID: ${itemId}`, error);
+            throw error;
           })
       ))
       .then(dataArray => {
@@ -57,21 +60,95 @@ export default function BookingView({ chosenItems }) {
     setTotalAmount(updatedTotalAmount);
   };
   
-
   const calculateTotalAmount = (updatedEquipments) => updatedEquipments.reduce((acc, equipment) => 
     acc + (equipment.renting_price * (equipment.quantity || 0)), 0);
 
-  const handleSubmit = () => {
-    // Handle submitting the booking
-    console.log("Booking submitted with items:", equipments);
-  };
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const userId = JSON.parse(atob(token.split('.')[1])).id;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+  
+      // Dictionary to store equipment type ID with corresponding quantity
+      const equipmentQuantities = {};
+  
+      // Iterate over equipments and store their quantities
+      equipments.forEach((equipment) => {
+        const { id: equipmentTypeId, quantity } = equipment;
+        equipmentQuantities[equipmentTypeId] = quantity;
+      });
+  
+      // Array to store all rented back equipment IDs
+      const allRentedBackEquipmentIds = [];
+  
+      // Iterate over equipments and make a request for each type
+      await Promise.all(equipments.map(async (equipment) => {
+        const { id: equipmentTypeId } = equipment;
+  
+        // Send a request to update the equipment with the updated quantities
+        const response = await axios.put('http://localhost:3001/api/equipments/updateUserId', {
+          equipmentTypeId,
+          userId,
+        }, config);
+  
+        // Push the returned equipment ID into the array
+        allRentedBackEquipmentIds.push(response.data.rentedBackEquipmentIds);
+      }));
+  
+      // Prepare data for booking creation
+      const bookingEquipmentIdsWithQuantities = allRentedBackEquipmentIds.map((equipmentId) => ({
+        equipmentId: equipmentId.equipmentId,
+        duration: equipmentQuantities[equipmentId.equipmentTypeId],
+      }));
+  
+      // Send a request to create a booking
+      const response2 = await axios.post('http://localhost:3001/api/bookings', {
+        totalPrice: totalAmount,
+        userId,
+        equipmentIds: bookingEquipmentIdsWithQuantities,
+      }, config);
+  
+      // Update booking orders state
+      setBookingOrders((prevBookingOrders) => {
+        // Extracting bookingId from response2.data
+        const bookingId = response2.data.id;
+    
+        // Adding the new bookingId to the list of previous booking orders
+        const uniqueBookingIds = Array.from(new Set([...prevBookingOrders, bookingId]));
+    
+        // Logging and returning the updated list of booking orders
+        if (!prevBookingOrders.includes(bookingId)) {
+            console.log("Booking ID added:", bookingId);
+        } else {
+            console.log("Booking ID already in bell:", bookingId);
+        }
+        return uniqueBookingIds;
+    });
+    
+  
+      console.log('All rented back equipment IDs:', allRentedBackEquipmentIds);
+  
+      // Handle booking creation or other operations here
+    } catch (error) {
+      console.error('Error submitting booking:', error);
+    }
+  };  
+  
 
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 3 }}>
         Booking
       </Typography>
-
+      <Link to="/"> 
+          <IconButton aria-label="back" sx={{ mr: 2 }}>
+            <ArrowBackIcon />
+          </IconButton>
+        </Link>
       {equipments.length > 0 ? (
         equipments.map((equipment) => (
           <Stack
@@ -96,7 +173,7 @@ export default function BookingView({ chosenItems }) {
               </Typography>
             </Stack>
             <TextField
-              label="Qty"
+              label="Dur"
               type="number"
               value={equipment.quantity}
               onChange={(event) => handleQuantityChange(equipment.id, event)}
@@ -126,4 +203,5 @@ export default function BookingView({ chosenItems }) {
 
 BookingView.propTypes = {
   chosenItems: PropTypes.arrayOf(PropTypes.number).isRequired, // Changed to array of numbers
+  setBookingOrders: PropTypes.func.isRequired,
 };

@@ -1,181 +1,114 @@
-import { faker } from '@faker-js/faker';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import AppNewsUpdate from '../app-news-update';
-import AppOrderTimeline from '../app-order-timeline';
-import AppCurrentVisits from '../app-current-visits';
-import AppWebsiteVisits from '../app-website-visits';
 import AppWidgetSummary from '../app-widget-summary';
-import AppCurrentSubject from '../app-current-subject';
-import AppConversionRates from '../app-conversion-rates';
+import EventPostCard from '../event-post-card';
+import AppNewsUpdate from '../app-news-update';
 
-// ----------------------------------------------------------------------
+export default function AppView({ isAuthenticated }) {
+  const [name, setName] = useState('');
+  const [totals, setTotals] = useState({
+    users: 0,
+    equipment: 0,
+    events: 0,
+  });
+  const [equipmentTypes, setEquipmentTypes] = useState([]);
+  const [events, setEvents] = useState([]);
 
-export default function AppView() {
+  useEffect(() => {
+    const fetchTotalsAndData = async () => {
+      try {
+        const [
+          usersRes,
+          equipmentRes,
+          eventsRes,
+          equipmentTypesRes,
+          eventsListRes,
+        ] = await Promise.all([
+          axios.get('http://localhost:3001/api/users/total/count'),
+          axios.get('http://localhost:3001/api/equipments/total/count'),
+          axios.get('http://localhost:3001/api/events/total/participatable'),
+          axios.get('http://localhost:3001/api/equipmentTypes'),
+          axios.get('http://localhost:3001/api/events/'),
+        ]);
+
+        setTotals({
+          users: usersRes.data.totalUsers,
+          equipment: equipmentRes.data.totalEquipments,
+          events: eventsRes.data.totalEvents,
+        });
+        setEquipmentTypes(equipmentTypesRes.data);
+        setEvents(eventsListRes.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchTotalsAndData();
+
+    if (isAuthenticated) {
+      const token = localStorage.getItem('token');
+      const decodedToken = JSON.parse(atob(token.split('.')[1]));
+      setName(decodedToken.name);
+    }
+  }, [isAuthenticated]);
+
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Hi, Welcome back 👋
+        {isAuthenticated ? `Welcome back, ${name} 👋` : 'We are waiting'}
       </Typography>
 
-      <Grid container spacing={3}>
-        <Grid xs={12} sm={6} md={3}>
+      <Grid container spacing={2} justifyContent="center">
+        <Grid item xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Weekly Sales"
-            total={714000}
+            title="Users"
+            total={totals.users}
             color="success"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
+            icon={<img alt="icon" src="/assets/icons/glass/ic_user.png" />}
           />
         </Grid>
 
-        <Grid xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="New Users"
-            total={1352831}
+            title="Equipments"
+            total={totals.equipment}
             color="info"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
+            icon={<img alt="icon" src="/assets/icons/glass/ic_equipment.png" />}
           />
         </Grid>
 
-        <Grid xs={12} sm={6} md={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Item Orders"
-            total={1723315}
+            title="Events"
+            total={totals.events}
             color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
+            icon={<img alt="icon" src="/assets/icons/glass/ic_event.png" />}
           />
         </Grid>
 
-        <Grid xs={12} sm={6} md={3}>
-          <AppWidgetSummary
-            title="Bug Reports"
-            total={234}
-            color="error"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
-          />
+        <Grid item xs={12} md={9} >
+          {events.length > 0 ? (
+            <EventPostCard events={events.filter(event => event.participatable === true)}   />
+          ) : (
+            <Typography variant="body1">Loading events...</Typography>
+          )}
         </Grid>
 
-        <Grid xs={12} md={6} lg={8}>
-          <AppWebsiteVisits
-            title="Website Visits"
-            subheader="(+43%) than last year"
-            chart={{
-              labels: [
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
-              ],
-              series: [
-                {
-                  name: 'Team A',
-                  type: 'column',
-                  fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                },
-                {
-                  name: 'Team B',
-                  type: 'area',
-                  fill: 'gradient',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                },
-                {
-                  name: 'Team C',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-                },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AppCurrentVisits
-            title="Current Visits"
-            chart={{
-              series: [
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={8}>
-          <AppConversionRates
-            title="Conversion Rates"
-            subheader="(+43%) than last year"
-            chart={{
-              series: [
-                { label: 'Italy', value: 400 },
-                { label: 'Japan', value: 430 },
-                { label: 'China', value: 448 },
-                { label: 'Canada', value: 470 },
-                { label: 'France', value: 540 },
-                { label: 'Germany', value: 580 },
-                { label: 'South Korea', value: 690 },
-                { label: 'Netherlands', value: 1100 },
-                { label: 'United States', value: 1200 },
-                { label: 'United Kingdom', value: 1380 },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AppCurrentSubject
-            title="Current Subject"
-            chart={{
-              categories: ['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math'],
-              series: [
-                { name: 'Series 1', data: [80, 50, 30, 40, 100, 20] },
-                { name: 'Series 2', data: [20, 30, 40, 80, 20, 80] },
-                { name: 'Series 3', data: [44, 76, 78, 13, 43, 10] },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={8}>
+        <Grid item xs={12} md={9}>
           <AppNewsUpdate
-            title="News Update"
-            list={[...Array(5)].map((_, index) => ({
-              id: faker.string.uuid(),
-              title: faker.person.jobTitle(),
-              description: faker.commerce.productDescription(),
-              image: `/assets/images/covers/cover_${index + 1}.jpg`,
-              postedAt: faker.date.recent(),
-            }))}
-          />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AppOrderTimeline
-            title="Order Timeline"
-            list={[...Array(5)].map((_, index) => ({
-              id: faker.string.uuid(),
-              title: [
-                '1983, orders, $4220',
-                '12 Invoices have been paid',
-                'Order #37745 from September',
-                'New order placed #XF-2356',
-                'New order placed #XF-2346',
-              ][index],
-              type: `order${index + 1}`,
-              time: faker.date.past(),
+            title="News Equipment"
+            list={equipmentTypes.slice(0, 5).map((equipment, index) => ({
+              id: equipment.id,
+              title: equipment.name,
+              description: equipment.description,
+              image: equipment.equipment_image || `/assets/images/covers/cover_${index + 1}.jpg`,
+              postedAt: new Date(), // Placeholder date
             }))}
           />
         </Grid>
@@ -183,3 +116,7 @@ export default function AppView() {
     </Container>
   );
 }
+
+AppView.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+};

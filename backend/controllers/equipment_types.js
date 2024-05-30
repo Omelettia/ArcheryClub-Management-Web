@@ -82,21 +82,7 @@ router.get('/search', async (req, res) => {
 });
 
 router.get('/:id', equipmentTypeFinder, async (req, res) => {
-  try {
-    const equipmentType = req.equipmentType;
-    const equipmentCount = await Equipment.count({
-      where: {
-        equipment_type_id: equipmentType.id
-      }
-    });
-    const response = {
-      equipmentType: equipmentType,
-      equipmentCount: equipmentCount
-    };
-    res.json(response);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
+  res.json(req.equipmentType);
 });
 
 router.put('/:id/disable', tokenExtractor, isAdmin, equipmentTypeFinder, async (req, res) => {

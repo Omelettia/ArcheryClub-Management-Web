@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { sequelize } = require('../util/db');
 const { tokenExtractor,isStaff } = require('../util/middleware');
 const { User, EquipmentType, Equipment } = require('../models');
 router.get('/', async (req, res) => {
@@ -23,16 +24,16 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/profile/:id', tokenExtractor, async (req, res) => {
+router.put('/profile/:id',tokenExtractor,isStaff, async (req, res) => {
   try {
     const equipment = await Equipment.findByPk(req.params.id);
     if (!equipment) {
       return res.status(404).json({ error: 'Equipment not found' });
     }
 
-    const { state, user_id, equipment_type_id } = req.body;
+    const { state, user_id  } = req.body;
     equipment.state = state || equipment.state;
-    equipment.user_id = user_id || equipment.user_id;
+    equipment.user_id = user_id ;
 
     await equipment.save();
     res.json(equipment);
@@ -98,6 +99,44 @@ router.post('/', tokenExtractor,isStaff, async (req, res) => {
   }
 });
 
+
+router.put('/updateUserId', tokenExtractor, async (req, res) => {
+  try {
+    const { equipmentTypeId, userId } = req.body;
+    // Find the first available equipment of the given type
+    const availableEquipment = await Equipment.findOne({
+      where: {
+        equipment_type_id: equipmentTypeId,
+        user_id: null // Available equipment has null userId
+      }
+    });
+
+    // If no available equipment is found, return a 404 status code with an error message
+    if (!availableEquipment) {
+      return res.status(404).json({ error: 'No available equipment found for the specified equipment type' });
+    }
+
+    // Update the userId for the available equipment
+    availableEquipment.user_id = userId;
+    await availableEquipment.save();
+
+    // Send back an object containing the rented back equipment ID and type ID
+    const rentedBackEquipmentIds = {
+      equipmentId: availableEquipment.id,
+      equipmentTypeId: availableEquipment.equipment_type_id
+    };
+
+    res.json({ rentedBackEquipmentIds });
+  } catch (error) {
+    console.error('Error updating userId for available equipment:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+
+
 const equipmentFinder = async (req, res, next) => {
   try {
     req.equipment = await Equipment.findByPk(req.params.id, {
@@ -144,5 +183,15 @@ router.delete('/:id', tokenExtractor, equipmentFinder, isStaff, async (req, res)
   }
 });
 
+// New endpoint to get the total number of equipments
+router.get('/total/count', async (req, res) => {
+  try {
+    const count = await Equipment.count();
+    res.json({ totalEquipments: count });
+  } catch (error) {
+    console.error('Error fetching equipment count:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router;

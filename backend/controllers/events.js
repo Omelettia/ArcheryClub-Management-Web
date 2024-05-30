@@ -180,5 +180,15 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+// New endpoint to get the total number of participatable events
+router.get('/total/participatable', async (req, res) => {
+  try {
+    const count = await Event.count({ where: { participatable: true } });
+    res.json({ totalEvents: count });
+  } catch (error) {
+    console.error('Error fetching participatable event count:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router;

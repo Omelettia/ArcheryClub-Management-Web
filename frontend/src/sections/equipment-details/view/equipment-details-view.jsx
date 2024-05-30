@@ -18,7 +18,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Iconify from 'src/components/iconify';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-export default function EquipmentDetailsView({ isStaff, setChosenItems }) {
+export default function EquipmentDetailsView({ isStaff, setChosenItems, isAuthenticated }) {
   const { equipmentTypeId } = useParams();
   const [equipmentType, setEquipmentType] = useState(null);
   const [isEditing, setIsEditing] = useState({
@@ -122,9 +122,11 @@ export default function EquipmentDetailsView({ isStaff, setChosenItems }) {
         </Link>
         <Typography variant="h4" sx={{ mr: 'auto' }}>
           Equipment Details
-          <Button variant="contained" sx={{ backgroundColor: '#000', color: '#fff', ml: 4 }} onClick={handleAddToCart}>
-            Add to cart
-          </Button>
+         {isAuthenticated && (
+           <Button variant="contained" sx={{ backgroundColor: '#000', color: '#fff', ml: 4 }} onClick={handleAddToCart}>
+             Add to cart
+           </Button>
+           )}
         </Typography>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
@@ -318,5 +320,6 @@ export default function EquipmentDetailsView({ isStaff, setChosenItems }) {
 
 EquipmentDetailsView.propTypes = {
   isStaff: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
   setChosenItems: PropTypes.func.isRequired,
 };

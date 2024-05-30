@@ -4,14 +4,15 @@ import IconButton from '@mui/material/IconButton';
 import Iconify from 'src/components/iconify';
 import { Link } from 'react-router-dom';
 
-export default function CartWidget({ itemCount }) { // Receive itemCount prop
+export default function CartWidget({ itemCount, isAuthenticated }) { // Receive itemCount and isAuthenticated props
   return (
     <IconButton
-      component={Link}
-      to="/booking"
+      component={isAuthenticated ? Link : 'div'} // Conditionally set component
+      to={isAuthenticated ? "/booking" : ""} // Conditionally set destination
       sx={{
         width: 40,
         height: 40,
+        cursor: isAuthenticated ? 'pointer' : 'default', // Change cursor style if not authenticated
       }}
     >
       <Badge showZero badgeContent={itemCount} color="error" max={99}> {/* Use itemCount */}
@@ -23,4 +24,5 @@ export default function CartWidget({ itemCount }) { // Receive itemCount prop
 
 CartWidget.propTypes = {
   itemCount: PropTypes.number.isRequired, // Define prop type for itemCount
+  isAuthenticated: PropTypes.bool,
 };

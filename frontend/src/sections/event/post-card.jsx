@@ -40,7 +40,7 @@ export default function PostCard({ event }) {
               {fDate(starting_date)}
             </Typography>
 
-            <Link
+            <Typography
               color="inherit"
               variant="subtitle2"
               underline="hover"
@@ -53,7 +53,7 @@ export default function PostCard({ event }) {
               }}
             >
               {name}
-            </Link>
+            </Typography>
 
             <Stack direction="row" spacing={1.5} justifyContent="flex-end" sx={{ mt: 3, color: 'text.disabled' }}>
               <Stack direction="row">

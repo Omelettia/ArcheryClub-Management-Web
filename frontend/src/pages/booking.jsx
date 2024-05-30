@@ -4,14 +4,14 @@ import {BookingView} from 'src/sections/booking/view';
 
 // ----------------------------------------------------------------------
 
-export default function BookingPage({ chosenItems }) {
+export default function BookingPage({ chosenItems,setBookingOrders }) {
   return (
     <>
       <Helmet>
         <title> Booking | WolfArchery </title>
       </Helmet>
 
-      <BookingView  chosenItems={chosenItems}  />
+      <BookingView  chosenItems={chosenItems} setBookingOrders = {setBookingOrders} />
     </>
   );
 }
@@ -19,4 +19,5 @@ export default function BookingPage({ chosenItems }) {
 BookingPage.propTypes = {
 
   chosenItems: PropTypes.array.isRequired,
+  setBookingOrders: PropTypes.func.isRequired
 };

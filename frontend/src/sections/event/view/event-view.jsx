@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -12,7 +13,7 @@ import PostSort from '../post-sort';
 import PostSearch from '../post-search';
 import NewEventForm from '../new-event-form'; 
 
-export default function EventView() {
+export default function EventView({isAuthenticated}) {
   const [events, setEvents] = useState([]);
   const [isNewEventFormOpen, setNewEventFormOpen] = useState(false); // State variable to control the visibility of the New Event Form
 
@@ -42,14 +43,16 @@ export default function EventView() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Event</Typography> 
         {/* Open New Event Form when button is clicked */}
-        <Button 
+        {isAuthenticated && (
+         <Button 
           variant="contained" 
           color="inherit" 
           startIcon={<Iconify icon="eva:plus-fill" />}
           onClick={handleOpenNewEventForm} // Call handleOpenNewEventForm when button is clicked
-        >
+         >
           New Event 
         </Button>
+        )}
       </Stack>
 
       <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
@@ -80,3 +83,6 @@ export default function EventView() {
     </Container>
   );
 }
+EventView.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired, 
+};

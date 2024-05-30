@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState} from 'react';
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
@@ -9,12 +9,12 @@ import Header from './header';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout({ children,isAuthenticated, chosenItems }) {
+export default function DashboardLayout({ children,isAuthenticated, chosenItems, bookingOrders,isStaff,setIsAuthenticated, setIsStaff,setIsAdmin}) {
   const [openNav, setOpenNav] = useState(false);
-
+  
   return (
     <>
-      <Header onOpenNav={() => setOpenNav(true)} chosenItems={chosenItems} />
+      <Header onOpenNav={() => setOpenNav(true)} chosenItems={chosenItems} bookingOrders = {bookingOrders} isAuthenticated = {isAuthenticated} />
 
       <Box
         sx={{
@@ -23,7 +23,8 @@ export default function DashboardLayout({ children,isAuthenticated, chosenItems 
           flexDirection: { xs: 'column', lg: 'row' },
         }}
       >
-        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} isAuthenticated={isAuthenticated} />
+        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} isAuthenticated={isAuthenticated} isStaff = {isStaff} setIsAuthenticated={setIsAuthenticated} setIsStaff={setIsStaff} 
+          setIsAdmin={setIsAdmin} />
 
         <Main>{children}</Main>
       </Box>
@@ -34,5 +35,10 @@ export default function DashboardLayout({ children,isAuthenticated, chosenItems 
 DashboardLayout.propTypes = {
   children: PropTypes.node,
   isAuthenticated: PropTypes.bool,
+  setIsAuthenticated: PropTypes.func.isRequired,
+  setIsStaff: PropTypes.func.isRequired,
+  setIsAdmin: PropTypes.func.isRequired,
+  isStaff: PropTypes.bool,
   chosenItems: PropTypes.array,
+  bookingOrders: PropTypes.array,
 };

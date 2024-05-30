@@ -12,13 +12,10 @@ module.exports = {
         type: DataTypes.FLOAT,
         allowNull: false
       },
-      duration: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
       is_returned: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
       },
       user_id: {
         type: DataTypes.INTEGER,

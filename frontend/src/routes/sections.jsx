@@ -19,26 +19,29 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 export default function Router({ isAuthenticated, setIsAuthenticated, isStaff, setIsStaff, isAdmin, setIsAdmin }) {
   const [chosenItems, setChosenItems] = useState([]);
+  const [bookingOrders, setBookingOrders] = useState([]);
+  
 
   const routes = useRoutes([
     {
       element: (
-        <DashboardLayout isAuthenticated={isAuthenticated} chosenItems={chosenItems}>
+        <DashboardLayout isAuthenticated={isAuthenticated} chosenItems={chosenItems}  bookingOrders = {bookingOrders} isStaff ={isStaff} setIsAuthenticated={setIsAuthenticated} setIsStaff={setIsStaff} 
+        setIsAdmin={setIsAdmin} >
           <Suspense>
             <Outlet />
           </Suspense>
         </DashboardLayout>
       ),
       children: [
-        { element: <IndexPage />, index: true  },
+        { element: <IndexPage isAuthenticated={isAuthenticated} />, index: true  },
         { path: 'Profile', element: <ProfilePage /> },
-        { path: 'user', element: <UserPage /> },
+        { path: 'user', element: <UserPage isAdmin = {isAdmin} isStaff = {isStaff}/> },
         { path: 'equipments', element: <EquipmentsPage isStaff={isStaff} /> },
         { path: 'storage', element: <StoragePage /> },
-        { path: 'equipment-details/:equipmentTypeId', element: <EquipmentDetailsPage setChosenItems={setChosenItems} isStaff={isStaff} /> },
-        { path: 'event-details/:eventId', element: <EventDetailsPage /> },
-        { path: 'booking', element: <BookingPage  chosenItems={chosenItems}/> },
-        { path: 'events', element: <EventPage /> },
+        { path: 'equipment-details/:equipmentTypeId', element: <EquipmentDetailsPage setChosenItems={setChosenItems} isStaff={isStaff} isAuthenticated = {isAuthenticated}/> },
+        { path: 'event-details/:eventId', element: <EventDetailsPage isAuthenticated={isAuthenticated} /> },
+        { path: 'booking', element: <BookingPage  chosenItems={chosenItems} setBookingOrders = {setBookingOrders}/> },
+        { path: 'events', element: <EventPage isAuthenticated = {isAuthenticated}/> },
       ],
     },
     {

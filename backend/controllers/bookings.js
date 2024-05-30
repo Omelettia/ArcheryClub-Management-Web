@@ -34,9 +34,9 @@ router.post('/', tokenExtractor, async (req, res) => {
 
     // Calculate total price based on equipment prices and duration
     let totalPrice = 0;
-    for (const equipmentId of req.body.equipmentIds) {
+    for (const { equipmentId, duration } of req.body.equipmentIds) {
       const equipment = await Equipment.findByPk(equipmentId);
-      totalPrice += equipment.rentingPrice * req.body.duration;
+      totalPrice += equipment.rentingPrice * duration;
     }
 
     // Create the booking with the calculated total price
@@ -48,7 +48,10 @@ router.post('/', tokenExtractor, async (req, res) => {
 
     // If request body contains equipmentIds array, associate equipments with booking
     if (req.body.equipmentIds && req.body.equipmentIds.length > 0) {
-      await booking.addEquipments(req.body.equipmentIds);
+      // Loop through each equipmentId and duration, and associate them with the booking
+      for (const { equipmentId, duration } of req.body.equipmentIds) {
+        await booking.addEquipment(equipmentId, { through: { duration: duration } });
+      }
     }
 
     res.json(booking);
@@ -57,6 +60,7 @@ router.post('/', tokenExtractor, async (req, res) => {
     res.status(400).json({ error: 'Invalid data' });
   }
 });
+
 
 const bookingFinder = async (req, res, next) => {
   try {

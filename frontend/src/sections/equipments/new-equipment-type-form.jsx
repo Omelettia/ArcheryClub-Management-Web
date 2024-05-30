@@ -19,7 +19,8 @@ export default function NewEquipmentTypeForm({ open, onClose, onSubmit }) {
     renting_price: '',
     category: '',
     equipment_image: '',
-    skill_level: ''
+    skill_level: '',
+    created_at: '',
   });
 
   const [errorMessage, setErrorMessage] = useState(null); // State variable to hold the error message
@@ -42,7 +43,7 @@ export default function NewEquipmentTypeForm({ open, onClose, onSubmit }) {
       if (Number.isNaN(purchasingPrice) || Number.isNaN(rentingPrice)) {
         throw new Error('Purchasing price and renting price must be valid numbers.');
       }
-  
+      formData.created_at = new Date();
       // Continue with form submission if validation passes
       const token = localStorage.getItem('token');
       const config = {
@@ -50,10 +51,10 @@ export default function NewEquipmentTypeForm({ open, onClose, onSubmit }) {
           Authorization: `Bearer ${token}`,
         },
       };
-      await axios.post('http://localhost:3001/api/equipmentTypes/', formData, config);
+      const response = await axios.post('http://localhost:3001/api/equipmentTypes/', formData, config);
       
-      // If successful, close the form
-      onSubmit(); // Trigger the onSubmit function provided by the parent component
+      // If successful, pass the new equipment data to the parent component
+      onSubmit(response.data); // Trigger the onSubmit function provided by the parent component with the new equipment data
       onClose();
     } catch (error) {
       // If there's an error, set the errorMessage state to display the message
