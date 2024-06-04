@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for archery-club-db on 2024-05-30T21:51:02+07:00
+# fly.toml app configuration file generated for archery-club-db on 2024-06-03T16:08:27+07:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -16,7 +16,7 @@ primary_region = 'hkg'
 [[services]]
   protocol = 'tcp'
   internal_port = 5432
-  auto_start_machines = true
+  auto_start_machines = false
 
   [[services.ports]]
     port = 5432
@@ -30,7 +30,7 @@ primary_region = 'hkg'
 [[services]]
   protocol = 'tcp'
   internal_port = 5433
-  auto_start_machines = true
+  auto_start_machines = false
 
   [[services.ports]]
     port = 5433
