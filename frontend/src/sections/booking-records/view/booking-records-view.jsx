@@ -43,7 +43,7 @@ export default function BookingRecordsView({ isStaff }) {
 
         let mappedData;
         if (!isStaff) {
-          const filteredData = data.filter(booking => booking.user_id === userId);
+          const filteredData = data.filter(booking => booking.user.id === userId);
           console.log('Filtered bookings for user:', filteredData);
           mappedData = filteredData.map(booking => ({
             id: booking.id,

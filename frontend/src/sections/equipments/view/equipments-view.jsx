@@ -25,6 +25,9 @@ export default function EquipmentsView({ isStaff }) {
     try {
       const response = await axios.get('http://localhost:3001/api/equipmentTypes/');
       setEquipments(response.data); // Set the fetched equipments in state
+      setSelectedCategory('');
+    setSelectedSkill('');
+    setSelectedPrice('');
     } catch (error) {
       console.error('Error fetching equipments:', error);
     }
