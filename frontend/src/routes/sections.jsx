@@ -10,6 +10,7 @@ export const UserPage = lazy(() => import('src/pages/user'));
 export const LoginPage = lazy(() => import('src/pages/login'));
 export const EquipmentsPage = lazy(() => import('src/pages/equipments'));
 export const BookingPage = lazy(() => import('src/pages/booking'));
+export const BookingRecordsPage = lazy(() => import('src/pages/booking-records'));
 export const StoragePage = lazy(() => import('src/pages/storage'));
 export const EquipmentDetailsPage = lazy(() => import('src/pages/equipment-details'));
 export const EventDetailsPage = lazy(() => import('src/pages/event-details'));
@@ -36,11 +37,12 @@ export default function Router({ isAuthenticated, setIsAuthenticated, isStaff, s
         { element: <IndexPage isAuthenticated={isAuthenticated} />, index: true  },
         { path: 'Profile', element: <ProfilePage /> },
         { path: 'user', element: <UserPage isAdmin = {isAdmin} isStaff = {isStaff}/> },
+        { path: 'booking-records', element: <BookingRecordsPage  isStaff = {isStaff}/> },
         { path: 'equipments', element: <EquipmentsPage isStaff={isStaff} /> },
         { path: 'storage', element: <StoragePage /> },
         { path: 'equipment-details/:equipmentTypeId', element: <EquipmentDetailsPage setChosenItems={setChosenItems} isStaff={isStaff} isAuthenticated = {isAuthenticated}/> },
         { path: 'event-details/:eventId', element: <EventDetailsPage isAuthenticated={isAuthenticated} /> },
-        { path: 'booking', element: <BookingPage  chosenItems={chosenItems} setBookingOrders = {setBookingOrders}/> },
+        { path: 'booking', element: <BookingPage  chosenItems={chosenItems} setChosenItems={setChosenItems} setBookingOrders = {setBookingOrders}/> },
         { path: 'events', element: <EventPage isAuthenticated = {isAuthenticated}/> },
       ],
     },

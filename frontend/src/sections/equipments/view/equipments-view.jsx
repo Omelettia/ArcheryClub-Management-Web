@@ -10,13 +10,16 @@ import axios from 'axios'; // Import axios for making HTTP requests
 import Iconify from 'src/components/iconify';
 import EquipmentCard from '../equipment-card';
 import EquipmentSort from '../equipment-sort';
-import EquipmentFilters from '../equipment-filters';
+import EquipmentFilters, { CATEGORY_OPTIONS, SKILL_OPTIONS, PRICE_OPTIONS } from '../equipment-filters';
 import NewEquipmentTypeForm from '../new-equipment-type-form';
 
 export default function EquipmentsView({ isStaff }) {
   const [openFilter, setOpenFilter] = useState(false);
   const [openNewEquipmentTypeForm, setOpenNewEquipmentTypeForm] = useState(false);
   const [equipments, setEquipments] = useState([]); // State to store fetched equipments
+  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [selectedSkill, setSelectedSkill] = useState([]);
+  const [selectedPrice, setSelectedPrice] = useState([]);
 
   const fetchEquipments = async () => {
     try {
@@ -55,6 +58,21 @@ export default function EquipmentsView({ isStaff }) {
     handleCloseNewEquipmentTypeForm();
   };
 
+  const filteredEquipments = equipments.filter((equipment) => {
+    if (
+      (selectedCategory.length === 0 || selectedCategory.includes(equipment.category)) &&
+      (selectedSkill.length === 0 || selectedSkill.includes(equipment.skill_level)) &&
+      (selectedPrice === '' ||
+        (selectedPrice === 'below' && equipment.renting_price < 25) ||
+        (selectedPrice === 'between' && equipment.renting_price >= 25 && equipment.renting_price <= 75) ||
+        (selectedPrice === 'above' && equipment.renting_price > 75))
+    ) {
+      return true;
+    }
+    return false;
+  });
+  
+
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -85,13 +103,19 @@ export default function EquipmentsView({ isStaff }) {
             openFilter={openFilter}
             onOpenFilter={handleOpenFilter}
             onCloseFilter={handleCloseFilter}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            selectedSkill={selectedSkill}
+            setSelectedSkill={setSelectedSkill}
+            selectedPrice={selectedPrice}
+            setSelectedPrice={setSelectedPrice}
           />
           <EquipmentSort />
         </Stack>
       </Stack>
 
       <Grid container spacing={3}>
-        {equipments.map((equipment) => (
+        {filteredEquipments.map((equipment) => (
           <Grid key={equipment.id} xs={12} sm={6} md={3}>
             <EquipmentCard equipment={equipment} />
           </Grid>

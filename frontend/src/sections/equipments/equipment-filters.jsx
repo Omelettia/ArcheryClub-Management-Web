@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Radio from '@mui/material/Radio';
@@ -12,11 +12,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-
-// ----------------------------------------------------------------------
 
 export const SORT_OPTIONS = [
   { value: 'featured', label: 'Featured' },
@@ -33,18 +30,38 @@ export const PRICE_OPTIONS = [
   { value: 'above', label: 'Above $75' },
 ];
 
+export default function EquipmentFilters({
+  openFilter,
+  onOpenFilter,
+  onCloseFilter,
+  selectedCategory,
+  setSelectedCategory,
+  selectedSkill,
+  setSelectedSkill,
+  selectedPrice,
+  setSelectedPrice,
+}) {
+  const handleClearAll = () => {
+    setSelectedCategory('');
+    setSelectedSkill('');
+    setSelectedPrice('');
+  };
 
-// ----------------------------------------------------------------------
-
-export default function EquipmentFilters({ openFilter, onOpenFilter, onCloseFilter }) {
   const renderSkill = (
     <Stack spacing={1}>
-      <Typography variant="subtitle2">Gender</Typography>
-      <FormGroup>
+      <Typography variant="subtitle2">Skill</Typography>
+      <RadioGroup>
         {SKILL_OPTIONS.map((item) => (
-          <FormControlLabel key={item} control={<Checkbox />} label={item} />
+          <FormControlLabel
+            key={item}
+            value={item}
+            control={<Radio />}
+            label={item}
+            checked={selectedSkill === item}
+            onChange={(event) => setSelectedSkill(event.target.value)}
+          />
         ))}
-      </FormGroup>
+      </RadioGroup>
     </Stack>
   );
 
@@ -53,12 +70,18 @@ export default function EquipmentFilters({ openFilter, onOpenFilter, onCloseFilt
       <Typography variant="subtitle2">Category</Typography>
       <RadioGroup>
         {CATEGORY_OPTIONS.map((item) => (
-          <FormControlLabel key={item} value={item} control={<Radio />} label={item} />
+          <FormControlLabel
+            key={item}
+            value={item}
+            control={<Radio />}
+            label={item}
+            checked={selectedCategory === item}
+            onChange={(event) => setSelectedCategory(event.target.value)}
+          />
         ))}
       </RadioGroup>
     </Stack>
   );
-
 
   const renderPrice = (
     <Stack spacing={1}>
@@ -70,12 +93,13 @@ export default function EquipmentFilters({ openFilter, onOpenFilter, onCloseFilt
             value={item.value}
             control={<Radio />}
             label={item.label}
+            checked={selectedPrice.includes(item.value)}
+            onChange={(event) => setSelectedPrice(event.target.value)}
           />
         ))}
       </RadioGroup>
     </Stack>
   );
-
 
   return (
     <>
@@ -119,7 +143,6 @@ export default function EquipmentFilters({ openFilter, onOpenFilter, onCloseFilt
             {renderCategory}
 
             {renderPrice}
-
           </Stack>
         </Scrollbar>
 
@@ -127,10 +150,11 @@ export default function EquipmentFilters({ openFilter, onOpenFilter, onCloseFilt
           <Button
             fullWidth
             size="large"
-            type="submit"
+            type="button"
             color="inherit"
             variant="outlined"
             startIcon={<Iconify icon="ic:round-clear-all" />}
+            onClick={handleClearAll}
           >
             Clear All
           </Button>
@@ -144,4 +168,10 @@ EquipmentFilters.propTypes = {
   openFilter: PropTypes.bool,
   onOpenFilter: PropTypes.func,
   onCloseFilter: PropTypes.func,
+  selectedCategory: PropTypes.string,
+  setSelectedCategory: PropTypes.func,
+  selectedSkill: PropTypes.string,
+  setSelectedSkill: PropTypes.func,
+  selectedPrice: PropTypes.string,
+  setSelectedPrice: PropTypes.func,
 };
