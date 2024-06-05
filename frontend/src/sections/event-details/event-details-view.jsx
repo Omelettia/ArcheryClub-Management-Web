@@ -51,7 +51,10 @@ export default function EventDetailsView({isAuthenticated}) {
   }, [eventId, userId]);
 
   const handleChange = (field, value) => {
-    setEventDetails((prev) => ({ ...prev, [field]: value }));
+    const newValue = value === "false";
+    setEventDetails((prev) => ({ ...prev, [field]: newValue }));
+    console.log("participatable",eventDetails.participatable)
+    handleSave();
   };
   
   const shouldShowJoinButton1 = userId !== eventDetails?.creator_id;
@@ -183,14 +186,14 @@ export default function EventDetailsView({isAuthenticated}) {
                 {userId === eventDetails.creator_id && (
                   <>
                     <Select
-                      value={eventDetails.participatable}
+                      value={!eventDetails.participatable}
                       onChange={(e) => handleChange('participatable', e.target.value)}
                       displayEmpty
                       inputProps={{ 'aria-label': 'Without label' }}
                       sx={{ mt: 2 }}
                     >
-                      <MenuItem value="true">Participatable</MenuItem>
                       <MenuItem value="false">Not Participatable</MenuItem>
+                      <MenuItem value="true">Participatable</MenuItem>
                     </Select>
                   </>
                 )}
