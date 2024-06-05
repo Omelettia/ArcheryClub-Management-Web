@@ -5,12 +5,13 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
-export default function BookingView({ chosenItems, setBookingOrders }) {
+export default function BookingView({ chosenItems, setBookingOrders,setChosenItems }) {
   const [equipments, setEquipments] = useState([]); // State to store fetched equipments
   const [totalAmount, setTotalAmount] = useState(0); // State to store total amount
 
@@ -47,6 +48,25 @@ export default function BookingView({ chosenItems, setBookingOrders }) {
       });
     }
   }, [chosenItems]); // Update equipments whenever chosenItems change
+  
+  const handleRemoveItem = (itemId) => {
+    // Convert itemId to an integer
+    const parsedItemId = parseInt(itemId, 10);
+    
+    // Filter out the item with the parsedItemId
+    const updatedChosenItems = chosenItems.filter(id => parseInt(id, 10) !== parsedItemId);
+  
+    // Log the removed item
+    console.log("Item removed:", parsedItemId);
+    
+    // Log the current state of chosenItems array
+    console.log("Updated chosenItems:", updatedChosenItems);
+    
+    // Update the chosenItems state
+    setChosenItems(updatedChosenItems);
+  };
+  
+  
 
   const handleQuantityChange = (equipmentId, event) => {
     const newQuantity = parseInt(event.target.value, 10);
@@ -149,7 +169,7 @@ export default function BookingView({ chosenItems, setBookingOrders }) {
             <ArrowBackIcon />
           </IconButton>
         </Link>
-      {equipments.length > 0 ? (
+      {chosenItems.length > 0 ? (
         equipments.map((equipment) => (
           <Stack
             key={equipment.id}
@@ -180,6 +200,9 @@ export default function BookingView({ chosenItems, setBookingOrders }) {
               inputProps={{ min: 0 }}
               sx={{ width: '60px' }}
             />
+            <IconButton onClick={() => handleRemoveItem(equipment.id)}>
+              <CloseIcon />
+            </IconButton>
           </Stack>
         ))
       ) : (
@@ -204,4 +227,5 @@ export default function BookingView({ chosenItems, setBookingOrders }) {
 BookingView.propTypes = {
   chosenItems: PropTypes.arrayOf(PropTypes.number).isRequired, // Changed to array of numbers
   setBookingOrders: PropTypes.func.isRequired,
+  setChosenItems: PropTypes.func.isRequired,
 };

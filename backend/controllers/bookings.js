@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
         },
         {
           model: User,
-          attributes: ['name']
+          attributes: ['name','profile_image']
         },
       ]
     });
@@ -32,18 +32,10 @@ router.post('/', tokenExtractor, async (req, res) => {
   try {
     const user = await User.findByPk(req.decodedToken.id);
 
-    // Calculate total price based on equipment prices and duration
-    let totalPrice = 0;
-    for (const { equipmentId, duration } of req.body.equipmentIds) {
-      const equipment = await Equipment.findByPk(equipmentId);
-      totalPrice += equipment.rentingPrice * duration;
-    }
-
     // Create the booking with the calculated total price
     const booking = await Booking.create({
       ...req.body,
       userId: user.id,
-      totalPrice: totalPrice, // Save the calculated total price
     });
 
     // If request body contains equipmentIds array, associate equipments with booking

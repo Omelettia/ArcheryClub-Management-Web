@@ -17,9 +17,9 @@ import Scrollbar from 'src/components/scrollbar';
 import TableNoData from 'src/sections/table-no-data';
 import TableHead from 'src/sections/table-head';
 import TableEmptyRows from 'src/sections/table-empty-rows';
+import TableToolbar from 'src/sections/table-toolbar';
 import { emptyRows, applyFilter, getComparator } from 'src/sections/utils';
 import StorageTableRow from '../storage-table-row'; 
-import StorageTableToolbar from '../storage-table-toolbar';
 import NewEquipmentForm from '../new-equipment-form';
 
 export default function StoragePage() {
@@ -147,7 +147,7 @@ export default function StoragePage() {
       </Stack>
 
       <Card>
-        <StorageTableToolbar
+        <TableToolbar
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}

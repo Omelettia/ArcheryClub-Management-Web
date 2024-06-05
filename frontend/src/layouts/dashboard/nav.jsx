@@ -95,7 +95,7 @@ export default function Nav({ openNav, onCloseNav, isAuthenticated,isStaff,setIs
     <Stack component="nav" spacing={1} sx={{ px: 4 }}>
       {navConfig
         // Filter out the 'storage' item if isStaff is false
-        .filter((item) => (isStaff || item.title !== 'storage') && !(isAuthenticated && item.title === 'login'))
+        .filter((item) => (isStaff || item.title !== 'storage') && !(isAuthenticated && item.title === 'login') && !(!isAuthenticated && item.title === 'records') )
         .map((item) => (
           <NavItem key={item.title} item={item} />
         ))}
