@@ -3,7 +3,7 @@
 ### Backend Setup
 - Get into backend directory
 - Open the .env file
-- Modify the connection string according to this format postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName
+- Modify the connection string according to this format (postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName)
 (if you want to run a database locally then YourHostname should be localhost otherwise it should be an IP address)
 - Run command node index.js
 ### Frontend Setup
@@ -17,3 +17,7 @@
 - NodeJs
 - ExpressJs
 - PostgreSQL
+## Screenshots
+- Dashboard
+<img src="Images\Dashboard (1).png">
+<img src="Images\Dashboard (2).png">
