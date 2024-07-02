@@ -21,3 +21,15 @@
 - Dashboard
 <img src="Images\Dashboard (1).png">
 <img src="Images\Dashboard (2).png">
+- Users
+<img src="Images\Users.png">
+- Records
+<img src="Images\BookingRecord.png">
+- Events
+<img src="Images\Event.png">
+- Equipment
+<img src="Images\Equipments.png">
+- Storage
+<img src="Images\Storages.png">
+
+## Demo : (https://youtu.be/dOM-6DG7X1U)
