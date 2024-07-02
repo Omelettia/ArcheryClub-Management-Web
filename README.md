@@ -19,5 +19,5 @@
 - PostgreSQL
 ## Screenshots
 - Dashboard
-<img src="Images\Dashboard (1).jpg">
-<img src="Images\Dashboard (2).jpg">
+<img src="Images\Dashboard (1).png">
+<img src="Images\Dashboard (2).png">
